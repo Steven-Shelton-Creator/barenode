@@ -1,0 +1,1 @@
+# ui — terminal UI (textual-based TUI / CLI REPL)

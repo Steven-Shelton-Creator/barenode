@@ -1,0 +1,1 @@
+# instructions — system prompt + agents.md loader (CH03)

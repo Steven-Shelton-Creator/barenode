@@ -1,0 +1,1 @@
+# events — OpenTelemetry GenAI semantic convention events (CH13)

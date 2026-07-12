@@ -1,0 +1,1 @@
+# pricing — cost tables per model (local = free, hosted = metered) (CH13)

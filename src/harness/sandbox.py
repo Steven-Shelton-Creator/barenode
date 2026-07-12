@@ -1,0 +1,1 @@
+# sandbox — Docker isolation / scrubbed local subprocess (CH08)

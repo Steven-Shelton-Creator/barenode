@@ -1,0 +1,1 @@
+# limits — token budget, clamping, max item characters (CH06)

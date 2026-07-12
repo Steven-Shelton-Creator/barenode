@@ -1,5 +1,8 @@
-node_modules/
+__pycache__/
+*.pyc
+.venv/
 .env
 logs/
+*.jsonl
 .DS_Store
-*.log
+.ruff_cache/

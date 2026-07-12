@@ -1,0 +1,1 @@
+# harness — agent loop, context, tools, sandbox, memory, orchestration

@@ -1,0 +1,1 @@
+# model — provider abstraction (OpenAI-compatible API seam)

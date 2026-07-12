@@ -1,0 +1,1 @@
+# tools — tool registry, function + schema definitions (CH05)

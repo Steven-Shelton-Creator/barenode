@@ -1,0 +1,1 @@
+# subagent — fresh agent per subtask, delegate + fan_out (CH11)

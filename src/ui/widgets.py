@@ -1,0 +1,1 @@
+# widgets — TUI components (conversation pane, trace stream, approval modal) (CH14)

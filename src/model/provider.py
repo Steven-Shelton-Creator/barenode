@@ -1,0 +1,1 @@
+# provider — abstract chat seam for LM Studio, Ollama, OpenRouter (CH01)

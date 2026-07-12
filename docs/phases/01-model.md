@@ -109,6 +109,42 @@ Add a test that uses the `fake` provider to verify the agent returns a response 
 
 ---
 
+## Verification — Test Run
+
+### Fake provider test (no model required)
+
+```bash
+$ cd /home/steven/projects/barenode
+$ BARENODE_MODEL=fake/echo uv run agent
+barenode [fake/echo]
+Type /quit to exit.
+> my name is x
+Echo (echo): my name is x
+> what is my name
+Echo (echo): what is my name
+```
+
+**Result:** ✅ Fake provider echoes every message. Stateless — no memory between turns.
+
+### Real model test (Ollama + gemma4:e4b)
+
+```bash
+$ BARENODE_MODEL=ollama/gemma4:e4b uv run agent
+```
+
+*(Run manually — requires Ollama running locally with the model pulled. The stateless behavior is the same: the model cannot remember your name from a previous turn.)*
+
+### Automated tests
+
+```bash
+$ uv run pytest tests/ -v
+============================= 6 passed in 0.02s ==============================
+```
+
+All 4 CH01-specific tests pass: fake provider echo, stateless behavior confirmed, default model validation, and invalid spec error handling.
+
+---
+
 ## Learnings
 
 - **Build system matters:** Using `project.scripts` entry points requires the package to be built and installed first. Adding `[build-system]` with setuptools and `tool.setuptools.packages.find.where = ["src"]` was the fix.

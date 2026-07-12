@@ -1,55 +1,140 @@
-# Phase 1 — The Model
+# CH01 Implementation Plan — The Model
 
-**Status:** 📝 Not Started
+**Phase:** 1  
+**Status:** 🔷 Ready for Decision  
+**Date:** 2026-07-11
 
 ---
 
-## Goal
+## What the Transcript Says
 
-Build the bare minimum agent: a stateless chat call with a REPL so you can type messages and get responses — but every turn is an independent call with no memory.
+> *"An agent class with one `send` method. A single chat call with no message list at all. A small REPL so you can keep typing, but every turn is an independent call. The call goes through a seam: a free `chat` function over a provider."*
 
-## Concepts
+> *"If you want to have a fake provider to run the test. We just swap the provider in one line in one variable."*
 
-- **Model is stateless:** One request in, one answer out. Nothing is carried between calls.
-- **Provider seam:** The model sits behind a `chat()` function that abstracts the provider (LM Studio, Ollama, OpenRouter).
-- **REPL:** A simple read-eval-print loop so the user can interact.
+---
 
-## Plan
+## Decisions Needed
 
-1. Implement a provider abstraction in `src/model/provider.py` — a `chat()` function that calls an OpenAI-compatible API.
-2. Build the `Agent` class in `src/harness/agent.py` with a single `send()` method that calls the provider.
-3. Wire up the REPL in `src/main.py` — `uv run agent` drops you into an interactive loop.
+### Decision 1 — Which provider to support first?
 
-## Files
+| Option | Setup | Pros | Cons |
+|--------|-------|------|------|
+| **Ollama** | `ollama pull gemma2:2b` | Free, local, dead simple API | Requires Ollama install |
+| **OpenRouter** | API key only | No local install, free tier | Needs internet + API key |
+| **LM Studio** | Download + load model | Matches video exactly | Heavier setup |
 
-| File | Purpose |
-|------|---------|
-| `src/model/provider.py` | Provider abstraction (chat seam) |
-| `src/harness/agent.py` | Agent class with `send()` method |
-| `src/main.py` | REPL entry point |
+**Recommendation:** Start with **Ollama** as default (easiest local setup), but write the provider seam to support all three from the start. Add a `FakeProvider` for tests.
 
-## Demo
+### Decision 2 — How to configure the provider?
 
+**Recommendation:** Single environment variable `BARENODE_MODEL` — format `provider/model`.
+
+Examples:
 ```
-$ uv run agent
-> My name is Gemma.
-Hi Gemma! How can I help you?
-> What is my name?
-I don't know — you told me in a previous turn but I can't remember. Each call is stateless.
+BARENODE_MODEL=ollama/gemma2:2b
+BARENODE_MODEL=openrouter/meta-llama/llama-3.1-8b
+BARENODE_MODEL=fake/echo
 ```
 
-The model **forgets** between turns. That's the point — it shows why history (Phase 2) is needed.
+### Decision 3 — REPL behavior?
+
+**Recommendation:** Simple `input()` loop with `/quit` to exit. Print a clear prompt showing the model in use.
+
+---
+
+## Implementation Steps
+
+### Step 1 — `src/model/provider.py`
+
+The provider seam. One function, multiple backends.
+
+```python
+def chat(model_spec: str, message: str) -> str:
+    provider, model = parse_model_spec(model_spec)
+    if provider == "ollama":
+        return _call_ollama(model, message)
+    elif provider == "openrouter":
+        return _call_openrouter(model, message)
+    elif provider == "lstudio":
+        return _call_lm_studio(model, message)
+    elif provider == "fake":
+        return f"Echo: {message}"
+    else:
+        raise ValueError(f"Unknown provider: {provider}")
+```
+
+### Step 2 — `src/harness/agent.py`
+
+```python
+class Agent:
+    def __init__(self, model: str = "ollama/gemma2:2b"):
+        self.model = model
+
+    def send(self, message: str) -> str:
+        return chat(self.model, message)    # No history — stateless
+```
+
+### Step 3 — `src/main.py` — REPL
+
+```python
+def repl():
+    model = os.environ.get("BARENODE_MODEL", "ollama/gemma2:2b")
+    agent = Agent(model=model)
+    
+    print(f"barenode [{model}]")
+    while True:
+        msg = input("> ").strip()
+        if msg in ("/quit", "/exit"): break
+        if msg.startswith("/"): ...  # future commands
+        response = agent.send(msg)
+        print(response)
+```
+
+### Step 4 — Tests
+
+Add a test that uses the `fake` provider to verify the agent returns a response without hitting a real API.
+
+---
+
+## Files Changed
+
+| File | Action | Purpose |
+|------|--------|---------|
+| `src/model/provider.py` | **Write** | Provider seam with ollama/openrouter/lstudio/fake backends |
+| `src/harness/agent.py` | **Write** | Agent class with `send()` method |
+| `src/main.py` | **Rewrite** | Real REPL loop |
+| `tests/test_ch01.py` | **Create** | Tests using fake provider |
+| `.env.example` | **Create** | Template for `BARENODE_MODEL` |
+
+---
 
 ## Acceptance Criteria
 
-- [ ] `uv run agent` starts a REPL
-- [ ] Agent responds to user messages
-- [ ] Agent does NOT remember previous turns
-- [ ] Provider can be swapped in one line (config or env var)
+- [ ] `BARENODE_MODEL=fake/echo uv run agent` starts REPL with fake provider
+- [ ] Type a message → see echoed response
+- [ ] Type another message → previous turn is **forgotten** (stateless)
+- [ ] `BARENODE_MODEL=ollama/gemma2:2b uv run agent` works with a real model (if Ollama available)
+- [ ] `/quit` exits cleanly
+- [ ] Tests pass with fake provider, no real API needed
 
-## Learnings
+---
 
-*(To be filled during implementation.)*
+## What's NOT built (that comes in CH02)
+
+- No history tracking
+- No message list
+- No memory between turns
+
+---
+
+## Decisions Log
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Primary provider | **TBD** | Awaiting user input |
+| Config format | **TBD** | Awaiting user input |
+| Default model | **TBD** | Awaiting user input |
 
 ## Reference Images
 

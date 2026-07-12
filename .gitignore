@@ -6,3 +6,4 @@ logs/
 *.jsonl
 .DS_Store
 .ruff_cache/
+*.egg-info/

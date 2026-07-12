@@ -49,3 +49,9 @@ Karishma.
 ## Learnings
 
 *(To be filled during implementation.)*
+
+## Reference Images
+
+| # | File | Description |
+|---|------|-------------|
+| 1 | `docs/research/images/ch04/barenode-ch04-01.png` | *(to annotate)* |

@@ -58,3 +58,9 @@ Result: 2148
 ## Learnings
 
 *(To be filled during implementation.)*
+
+## Reference Images
+
+| # | File | Description |
+|---|------|-------------|
+| 1 | `docs/research/images/ch10/barenode-ch10-01.png` | *(to annotate)* |

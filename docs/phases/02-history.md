@@ -63,3 +63,9 @@ The model **remembers** — because the harness feeds the history back into ever
 ## Learnings
 
 *(To be filled during implementation.)*
+
+## Reference Images
+
+| # | File | Description |
+|---|------|-------------|
+| 1 | `docs/research/images/ch02/barenode-ch02-01.png` | *(to annotate)* |

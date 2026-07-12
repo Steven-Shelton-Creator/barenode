@@ -49,3 +49,10 @@ Without instructions, the model would answer "I'm an AI" or "I don't have a name
 ## Learnings
 
 *(To be filled during implementation.)*
+
+## Reference Images
+
+| # | File | Description |
+|---|------|-------------|
+| 1 | `docs/research/images/ch03/barenode-ch03-01.png` | *(to annotate)* |
+| 2 | `docs/research/images/ch03/barenode-ch03-02.png` | *(to annotate)* |

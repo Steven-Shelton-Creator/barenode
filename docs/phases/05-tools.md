@@ -61,3 +61,10 @@ Blocked: path outside workspace.
 ## Learnings
 
 *(To be filled during implementation.)*
+
+## Reference Images
+
+| # | File | Description |
+|---|------|-------------|
+| 1 | `docs/research/images/ch05/barenode-ch05-01.png` | *(to annotate)* |
+| 2 | `docs/research/images/ch05/barenode-ch05-02.png` | *(to annotate)* |

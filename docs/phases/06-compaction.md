@@ -55,3 +55,11 @@ The middle got compressed, but the critical fact survived because it was near th
 ## Learnings
 
 *(To be filled during implementation.)*
+
+## Reference Images
+
+| # | File | Description |
+|---|------|-------------|
+| 1 | `docs/research/images/ch06/barenode-ch06-01.png` | *(to annotate)* |
+| 2 | `docs/research/images/ch06/barenode-ch06-02.png` | *(to annotate)* |
+| 3 | `docs/research/images/ch06/barenode-ch06-03.png` | *(to annotate)* |

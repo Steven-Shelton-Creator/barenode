@@ -54,3 +54,9 @@ I can't answer that — I don't have internet access.
 ## Learnings
 
 *(To be filled during implementation.)*
+
+## Reference Images
+
+| # | File | Description |
+|---|------|-------------|
+| 1 | `docs/research/images/ch12/barenode-ch12-01.png` | *(to annotate)* |

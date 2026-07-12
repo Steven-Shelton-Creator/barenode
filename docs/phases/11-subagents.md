@@ -55,3 +55,9 @@ Neither subagent saw the other's reasoning — each ran in isolation.
 ## Learnings
 
 *(To be filled during implementation.)*
+
+## Reference Images
+
+| # | File | Description |
+|---|------|-------------|
+| 1 | `docs/research/images/ch11/barenode-ch11-01.png` | *(to annotate)* |

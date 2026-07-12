@@ -58,3 +58,10 @@ Total tokens    : 227
 ## Learnings
 
 *(To be filled during implementation.)*
+
+## Reference Images
+
+| # | File | Description |
+|---|------|-------------|
+| 1 | `docs/research/images/ch13/barenode-ch13-01.png` | *(to annotate)* |
+| 2 | `docs/research/images/ch13/barenode-ch13-02.png` | *(to annotate)* |

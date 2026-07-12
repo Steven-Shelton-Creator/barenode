@@ -50,3 +50,9 @@ The codename "hila" lives nowhere in the prompt — it's only in the skill file 
 ## Learnings
 
 *(To be filled during implementation.)*
+
+## Reference Images
+
+| # | File | Description |
+|---|------|-------------|
+| 1 | `docs/research/images/ch07/barenode-ch07-01.png` | *(to annotate)* |

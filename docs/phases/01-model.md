@@ -50,3 +50,10 @@ The model **forgets** between turns. That's the point — it shows why history (
 ## Learnings
 
 *(To be filled during implementation.)*
+
+## Reference Images
+
+| # | File | Description |
+|---|------|-------------|
+| 1 | `docs/research/images/ch01/barenode-ch01-01.png` | *(to annotate)* |
+| 2 | `docs/research/images/ch01/barenode-ch01-02.png` | *(to annotate)* |

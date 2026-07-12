@@ -1,7 +1,7 @@
 # CH01 Implementation Plan — The Model
 
 **Phase:** 1  
-**Status:** 🔷 Ready for Decision  
+**Status:** ✅ Complete  
 **Date:** 2026-07-11
 
 ---
@@ -108,6 +108,13 @@ Add a test that uses the `fake` provider to verify the agent returns a response 
 | `.env.example` | **Create** | Template for `BARENODE_MODEL` |
 
 ---
+
+## Learnings
+
+- **Build system matters:** Using `project.scripts` entry points requires the package to be built and installed first. Adding `[build-system]` with setuptools and `tool.setuptools.packages.find.where = ["src"]` was the fix.
+- **Imports drop the `src.` prefix:** When packages are installed from `src/`, the import paths become `harness.agent` not `src.harness.agent`.
+- **Fake provider is invaluable:** Being able to test without a real model means tests run in milliseconds and don't need internet.
+- **The stateless demo is the punchline:** The whole point of CH01 is demonstrating the problem that all future chapters solve.
 
 ## Acceptance Criteria
 

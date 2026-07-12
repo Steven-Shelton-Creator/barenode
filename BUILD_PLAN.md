@@ -13,7 +13,7 @@ Each milestone maps to one chapter / git tag. Every chapter builds one primitive
 | Step | Tag        | What We Build                          | Files Touched                  |
 |------|------------|----------------------------------------|--------------------------------|
 | 0    | `CH00`     | Scaffold: `pyproject.toml`, `uv`, dirs | project setup                  |
-| 1    | `CH01`     | Bare model call — stateless REPL       | `src/model/`, `src/agent.py`   |
+| 1    | `CH01`     | ✅ Bare model call — stateless REPL       | `src/model/`, `src/harness/`    |
 | 2    | `CH02`     | History — `self.messages` list         | `src/harness/agent.py`         |
 
 **Demo:** Start REPL, type "my name is X", next turn ask "what is my name?" — CH01 forgets, CH02 remembers.

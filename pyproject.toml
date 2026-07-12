@@ -4,11 +4,21 @@ version = "0.1.0"
 description = "Building an AI Agent From Scratch in Python — one primitive at a time"
 requires-python = ">=3.11"
 
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.uv]
+package = true
+
 [project.scripts]
-agent = "src.main:repl"
-demo = "src.main:demo"
-tui = "src.ui.app:run"
-verify = "src.harness.verify:run"
+agent = "main:repl"
+demo = "main:demo"
+tui = "ui.app:run"
+verify = "harness.verify:run"
 
 [tool.ruff]
 target-version = "py311"
@@ -16,3 +26,8 @@ line-length = 100
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]

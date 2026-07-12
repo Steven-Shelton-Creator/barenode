@@ -1,20 +1,69 @@
-"""barenode — An AI agent built from scratch, one primitive at a time."""
+"""barenode — CLI entry points.
 
+Usage
+-----
+    uv run agent          # interactive REPL
+    uv run demo           # scripted demo
+"""
+
+import os
 import sys
+
+from harness.agent import Agent
 
 
 def repl() -> None:
-    """REPL entry point (uv run agent)."""
-    print("barenode REPL — type /help for commands, /quit to exit")
-    print("(coming soon — checkout CH01 for the first primitive)")
-    sys.exit(0)
+    """Interactive REPL — ``uv run agent``."""
+    model = os.environ.get("BARENODE_MODEL", "ollama/qwen2.5:8b")
+    agent = Agent(model=model)
+
+    print(f"barenode [{model}]")
+    print("Type /quit to exit.")
+
+    while True:
+        try:
+            raw = input("> ")
+        except (EOFError, KeyboardInterrupt):
+            print()
+            break
+
+        msg = raw.strip()
+        if not msg:
+            continue
+        if msg in ("/quit", "/exit"):
+            break
+
+        try:
+            response = agent.send(msg)
+            print(response)
+        except Exception as exc:
+            print(f"[error] {exc}")
 
 
 def demo() -> None:
-    """Scripted demo entry point (uv run demo)."""
-    print("barenode demo — scripted walkthrough")
-    print("(coming soon — each chapter tag adds a demoable primitive)")
-    sys.exit(0)
+    """Scripted demo — ``uv run demo``."""
+    print("barenode demo — CH01")
+    print("=" * 40)
+
+    model = os.environ.get("BARENODE_MODEL", "fake/echo")
+    agent = Agent(model=model)
+
+    messages = [
+        "Hello! What is your name?",
+        "My name is Gemma.",
+        "What is my name?",
+    ]
+
+    for msg in messages:
+        print(f"\n> {msg}")
+        try:
+            print(agent.send(msg))
+        except Exception as exc:
+            print(f"[error] {exc}")
+
+    print("\n" + "=" * 40)
+    print("Notice: the model 'forgot' your name between turns.")
+    print("That's the stateless problem — fixed in CH02.")
 
 
 if __name__ == "__main__":

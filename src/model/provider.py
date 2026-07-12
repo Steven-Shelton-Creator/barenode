@@ -20,15 +20,16 @@ import urllib.error
 # Public API
 # ---------------------------------------------------------------------------
 
-def chat(model_spec: str, message: str) -> str:
-    """Send a single message to the model and return the text response.
+def chat(model_spec: str, messages: list[dict]) -> str:
+    """Send a conversation to the model and return the text response.
 
     Parameters
     ----------
     model_spec : str
         Format ``provider/model_name``, e.g. ``ollama/qwen2.5:8b``.
-    message : str
-        The user's message text.
+    messages : list[dict]
+        Conversation history as a list of ``{"role": ..., "content": ...}``
+        dicts.  The last message should be the user's turn.
 
     Returns
     -------
@@ -38,13 +39,13 @@ def chat(model_spec: str, message: str) -> str:
     provider, model = _parse_spec(model_spec)
 
     if provider == "ollama":
-        return _call_ollama(model, message)
+        return _call_ollama(model, messages)
     if provider == "openrouter":
-        return _call_openrouter(model, message)
+        return _call_openrouter(model, messages)
     if provider == "lstudio":
-        return _call_lstudio(model, message)
+        return _call_lstudio(model, messages)
     if provider == "fake":
-        return _call_fake(model, message)
+        return _call_fake(model, messages)
 
     raise ValueError(f"Unknown provider '{provider}'. "
                      f"Expected one of: ollama, openrouter, lstudio, fake")
@@ -81,20 +82,20 @@ def _post_json(url: str, headers: dict, payload: dict) -> dict:
 # Provider implementations
 # ---------------------------------------------------------------------------
 
-def _call_ollama(model: str, message: str) -> str:
+def _call_ollama(model: str, messages: list[dict]) -> str:
     """Call Ollama's chat completion endpoint."""
     url = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434") + "/api/chat"
     headers = {"Content-Type": "application/json"}
     payload = {
         "model": model,
-        "messages": [{"role": "user", "content": message}],
+        "messages": messages,
         "stream": False,
     }
     data = _post_json(url, headers, payload)
     return data["message"]["content"]
 
 
-def _call_openrouter(model: str, message: str) -> str:
+def _call_openrouter(model: str, messages: list[dict]) -> str:
     """Call the OpenRouter chat completions endpoint."""
     api_key = os.environ.get("OPENROUTER_API_KEY")
     if not api_key:
@@ -107,25 +108,30 @@ def _call_openrouter(model: str, message: str) -> str:
     }
     payload = {
         "model": model,
-        "messages": [{"role": "user", "content": message}],
+        "messages": messages,
     }
     data = _post_json(url, headers, payload)
     return data["choices"][0]["message"]["content"]
 
 
-def _call_lstudio(model: str, message: str) -> str:
+def _call_lstudio(model: str, messages: list[dict]) -> str:
     """Call LM Studio's local OpenAI-compatible endpoint."""
     base = os.environ.get("LM_STUDIO_BASE_URL", "http://localhost:1234/v1")
     url = f"{base.rstrip('/')}/chat/completions"
     headers = {"Content-Type": "application/json"}
     payload = {
         "model": model,
-        "messages": [{"role": "user", "content": message}],
+        "messages": messages,
     }
     data = _post_json(url, headers, payload)
     return data["choices"][0]["message"]["content"]
 
 
-def _call_fake(model: str, message: str) -> str:
-    """Fake provider — echoes the message back for testing."""
-    return f"Echo ({model}): {message}"
+def _call_fake(model: str, messages: list[dict]) -> str:
+    """Fake provider — echoes the last user message back for testing."""
+    # Find the last user message in the conversation
+    last_user = next(
+        (m["content"] for m in reversed(messages) if m["role"] == "user"),
+        "(no user message)"
+    )
+    return f"Echo ({model}): {last_user}"

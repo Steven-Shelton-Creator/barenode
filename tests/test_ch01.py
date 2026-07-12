@@ -33,4 +33,4 @@ def test_invalid_model_spec() -> None:
     from model.provider import chat
 
     with pytest.raises(ValueError, match="Invalid model spec"):
-        chat("bad-spec", "hello")
+        chat("bad-spec", [{"role": "user", "content": "hello"}])

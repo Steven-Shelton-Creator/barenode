@@ -11,7 +11,11 @@ from model.provider import chat
 
 
 class Agent:
-    """A bare-bones coding agent.
+    """A coding agent with conversation memory.
+
+    Keeps a ``self.messages`` list that grows with every turn and is
+    replayed on every call so the model appears to "remember" the
+    conversation.
 
     Parameters
     ----------
@@ -25,11 +29,15 @@ class Agent:
         self.model = model or os.environ.get(
             "BARENODE_MODEL", "ollama/qwen2.5:8b"
         )
+        self.messages: list[dict] = []
 
     def send(self, message: str) -> str:
-        """Send a single message and return the model's reply.
+        """Append a user message to the conversation and return the model's reply.
 
-        This is a *stateless* call — the model has no memory of
-        previous messages.  History is added in CH02.
+        The full message history is sent with every call so the model
+        has context from previous turns.
         """
-        return chat(self.model, message)
+        self.messages.append({"role": "user", "content": message})
+        reply = chat(self.model, self.messages)
+        self.messages.append({"role": "assistant", "content": reply})
+        return reply

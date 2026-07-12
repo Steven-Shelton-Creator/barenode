@@ -42,7 +42,7 @@ def repl() -> None:
 
 def demo() -> None:
     """Scripted demo — ``uv run demo``."""
-    print("barenode demo — CH01")
+    print("barenode demo — CH02")
     print("=" * 40)
 
     model = os.environ.get("BARENODE_MODEL", "fake/echo")
@@ -54,7 +54,7 @@ def demo() -> None:
         "What is my name?",
     ]
 
-    for msg in messages:
+    for i, msg in enumerate(messages):
         print(f"\n> {msg}")
         try:
             print(agent.send(msg))
@@ -62,8 +62,9 @@ def demo() -> None:
             print(f"[error] {exc}")
 
     print("\n" + "=" * 40)
-    print("Notice: the model 'forgot' your name between turns.")
-    print("That's the stateless problem — fixed in CH02.")
+    print(f"History now contains {len(agent.messages)} messages.")
+    print("The harness replays the full conversation on every call.")
+    print("With a real model, the agent would 'remember' your name.")
 
 
 if __name__ == "__main__":

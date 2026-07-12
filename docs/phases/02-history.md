@@ -56,13 +56,29 @@ The model **remembers** — because the harness feeds the history back into ever
 
 ## Acceptance Criteria
 
-- [ ] Agent remembers facts from previous turns
-- [ ] Messages list grows with each turn
-- [ ] No external storage yet (in-memory only)
+- [x] Agent remembers facts from previous turns
+- [x] Messages list grows with each turn
+- [x] No external storage yet (in-memory only)
 
 ## Learnings
 
-*(To be filled during implementation.)*
+- The provider seam needed a signature change: `chat(message: str)` → `chat(messages: list[dict])`. All four provider implementations had to be updated to pass the raw messages list instead of wrapping a single message.
+- The fake provider needed updating too — it now finds the last user message from the list instead of echoing the raw input string.
+- Only 3 lines of code in the Agent (`self.messages = []`, two appends), but the provider signature change rippled across 4 provider functions. Worth it for correctness — the provider should accept the same format every LLM API expects.
+- Old CH01 tests still pass because the fake provider behavior is semantically equivalent for those test cases.
+- The REPL (`uv run agent`) required zero changes — all history management is internal to the Agent.
+
+## Verification
+
+```
+$ BARENODE_MODEL=fake/echo uv run demo
+History now contains 6 messages.
+
+$ BARENODE_MODEL=ollama/qwen3.5:9b uv run agent
+> My name is Gemma.
+> What is my name?
+Your name is Gemma!   ← remembers across turns
+```
 
 ## Reference Images
 

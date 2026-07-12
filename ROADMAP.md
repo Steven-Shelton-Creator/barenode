@@ -17,8 +17,8 @@
 
 ## Tier 1 — Core Agent
 
-- [ ] **CH01** — Model: bare stateless chat call
-- [ ] **CH02** — History: message list, append, replay
+- [x] **CH01** — Model: bare stateless chat call
+- [x] **CH02** — History: message list, append, replay
 - [ ] **CH03** — Instructions: system prompt, agents.md loader
 - [ ] **CH04** — Context Delivery: @file injection
 

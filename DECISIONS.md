@@ -78,4 +78,44 @@ Use **Python 3.11+** with **uv** as the package manager and runtime toolchain.
 
 ---
 
-*More ADRs will be added as decisions are made.*
+## ADR-003: CH01 — Provider Abstraction & REPL Design
+
+**Status:** Closed
+
+**Date:** 2026-07-11
+
+### Context
+
+Chapter 01 requires a bare model call — the first primitive. We need a provider seam so the agent can talk to any LLM backend, and a REPL so the user can interact. The transcript says: *"The call goes through a seam: a free `chat` function over a provider (LM Studio, Ollama, or OpenRouter)."* and *"If you want to have fake provider to run the test, we just swap the provider in one line."*
+
+### Options Considered
+
+| Provider | Setup | Pros | Cons |
+|----------|-------|------|------|
+| **Ollama** | `ollama pull <model>` | Free, local, dead simple API | Requires Ollama daemon |
+| **OpenRouter** | API key | No local install, free tier | Needs internet + API key |
+| **LM Studio** | Download + GUI | Matches video exactly | Heavier setup |
+| **Fake/Echo** | No dependencies | Perfect for tests | Not a real LLM |
+
+### Decision
+
+1. **Default provider:** Ollama (we already have it with 8b models)
+2. **Config format:** Single environment variable `BARENODE_MODEL=provider/model`
+3. **Default model:** `ollama/qwen2.5:8b` (or whichever we have locally)
+4. **Provider-agnostic:** All providers (ollama, openrouter, lstudio, fake) built into the seam from day one — user picks by changing one env var
+5. **No keys in repo:** The `.env.example` documents the vars, `.gitignore` blocks `.env`
+6. **REPL:** Simple `input()` loop with `/quit` to exit
+
+### Rationale
+
+- The provider seam is the entire point of CH01 — making it swappable in one line teaches the architecture
+- Ollama is the simplest local setup (no Docker, no GUI, just a daemon + CLI)
+- OpenRouter is the easiest path for users who don't want to run local models
+- Fake provider means tests run without any model at all — critical for CI
+- The `provider/model` format is unambiguous and extensible (adding a new provider is just another branch)
+
+### Consequences
+
+- Every user must bring their own model or API key — nothing is pre-configured
+- The fake provider becomes the test bedrock for all future chapters
+- Later chapters will add history, tools, etc. on top of this same send() interface

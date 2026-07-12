@@ -132,9 +132,11 @@ Add a test that uses the `fake` provider to verify the agent returns a response 
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| Primary provider | **TBD** | Awaiting user input |
-| Config format | **TBD** | Awaiting user input |
-| Default model | **TBD** | Awaiting user input |
+| Primary provider | **Ollama** | Already installed with 8b models |
+| Config format | `BARENODE_MODEL=provider/model` | Unambiguous, extensible |
+| Default model | `ollama/qwen2.5:8b` | Lightweight, works on most hardware |
+| Provider-agnostic | All providers built-in | User picks by env var, no code changes |
+| REPL | `input()` loop, `/quit` to exit | Minimal, no dependencies |
 
 ## Reference Images
 

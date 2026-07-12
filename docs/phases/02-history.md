@@ -1,6 +1,7 @@
 # Phase 2 — History
 
-**Status:** 📝 Not Started
+**Status:** ✅ Complete
+**Date:** 2026-07-12
 
 ---
 
@@ -79,6 +80,61 @@ $ BARENODE_MODEL=ollama/qwen3.5:9b uv run agent
 > What is my name?
 Your name is Gemma!   ← remembers across turns
 ```
+
+## Conversation Log (2026-07-12 Session)
+
+This section captures the full conversation summary and decision logic from the implementation session, preserving the reasoning for future reference.
+
+### Session Start
+
+- **Context:** Continued from CH01 (tagged/complete). All other files were scaffolded stubs.
+- **Goal:** Add conversation history so the agent "remembers" across turns.
+- **Approach:** Follow the observed workflow cycle (READ → PLAN → DECIDE → BUILD → TEST → VERIFY → LOG).
+
+### Key Observations During Implementation
+
+1. **The phase doc underestimated scope.** It said only `agent.py` would change, but the provider seam needed a signature change too. The actual files touched: `agent.py`, `provider.py`, `main.py`, `test_ch01.py`, `test_ch02.py` (new).
+
+2. **The provider signature change was the real work.** While the Agent change was literally 3 lines (`self.messages = []`, two appends), updating all 4 provider implementations to accept `messages: list[dict]` took the bulk of the effort.
+
+3. **The fake provider had to be smarter.** Previously it echoed the raw input string. Now it must find the last user message from the messages list — a more realistic simulation of how a real model consumes the conversation.
+
+4. **No REPL changes needed.** The `main.py` entry point calls `agent.send(msg)` which handles history internally. The user-facing interface is unchanged.
+
+### Decision Made
+
+**Provider signature change:** `chat(model_spec: str, message: str)` → `chat(model_spec: str, messages: list[dict])`
+
+Rationale: Every LLM API expects a messages array. The provider seam should match that format natively. No hidden transformations, no wrapping. This also anticipates CH03 (system prompts are just another message in the list).
+
+Recorded as **ADR-004** in `DECISIONS.md`.
+
+### Verification Results
+
+```
+$ uv run pytest tests/ -v           → 10 passed (0.02s)
+$ BARENODE_MODEL=fake/echo uv run demo  → 6 messages tracked
+$ BARENODE_MODEL=ollama/qwen3.5:9b uv run agent
+  > My name is Gemma.
+  > What is my name?
+  Your name is Gemma!   ← remembers across turns
+```
+
+What actually happened during the real model test:
+- First turn: "My name is Gemma." → model responded "Hello Gemma! Nice to meet you."
+- Second turn: "What is my name?" → model responded "Your name is Gemma!" — confirming memory works
+
+### Documentation Updates Made
+
+- `docs/workflow-reflections.md` — Renamed from `workflow-playbook.md`, reframed as post-hoc reflection
+- `DECISIONS.md` — Added ADR-004 documenting the provider signature change
+- `docs/2026-07-12-session.md` — Session log with full details
+- `BUILD_PLAN.md` — CH02 marked complete
+- `ROADMAP.md` — CH01 + CH02 marked complete
+
+### Next Steps
+
+Proceed to **CH03 — Instructions**: Add system prompt, auto-load `agents.md`, and workspace confinement.
 
 ## Reference Images
 

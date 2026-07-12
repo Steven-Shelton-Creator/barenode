@@ -119,3 +119,54 @@ Chapter 01 requires a bare model call — the first primitive. We need a provide
 - Every user must bring their own model or API key — nothing is pre-configured
 - The fake provider becomes the test bedrock for all future chapters
 - Later chapters will add history, tools, etc. on top of this same send() interface
+
+---
+
+## ADR-004: CH02 — Provider Signature Change for Conversation History
+
+**Status:** Closed
+
+**Date:** 2026-07-12
+
+### Context
+
+Chapter 02 adds conversation history — the Agent keeps a `self.messages` list and replays it on every call. This means the provider `chat()` function needs to accept the full messages list instead of a single string.
+
+We had two options:
+
+### Option A — Change `chat()` signature to accept `list[dict]`
+
+| Pros | Cons |
+|------|------|
+| Directly matches every LLM API (Ollama, OpenAI, OpenRouter all expect a messages array) | Requires updating all 4 provider implementations and any existing callers |
+| Clean — no wrapping or internal assembly | |
+| Transparent — the provider sees exactly what the harness sends | |
+
+### Option B — Keep `chat(message: str)`, assemble messages list inside each provider
+
+| Pros | Cons |
+|------|------|
+| No signature change needed | Each provider has to wrap the single message into a list internally |
+| Existing callers unchanged | Hides the real API shape from the caller |
+| | Adds a hidden transformation in every provider backend |
+| | Would need to change again when we add system prompts (CH03) |
+
+### Decision
+
+**Option A — Change `chat()` signature to accept `messages: list[dict]`.**
+
+All four provider implementations (`_call_ollama`, `_call_openrouter`, `_call_lstudio`, `_call_fake`) updated to accept and use the full messages list. The fake provider now finds the last user message from the list instead of echoing a raw string.
+
+### Rationale
+
+- Every LLM API (Ollama, OpenAI, OpenRouter, LM Studio) expects a messages array — the provider should accept that format natively
+- CH03 adds system prompts (another message in the list) — this change anticipates that cleanly
+- Keep the provider seam thin and honest: no hidden transformations
+- The REPL (`main.py`) required zero changes — history management is entirely in the Agent
+
+### Consequences
+
+- All existing CH01 tests still pass (fake provider behavior is semantically equivalent for those test cases)
+- The change rippled across 4 provider functions, but was mechanical and safe
+- The `chat()` function now matches the transcript's description: it sends a conversation, not a single message
+- Future chapters (CH03 instructions, CH04 context delivery) will add messages to the list naturally

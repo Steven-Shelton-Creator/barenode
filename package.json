@@ -1,0 +1,15 @@
+{
+  "name": "barenode",
+  "version": "0.1.0",
+  "description": "Bare-bones Node.js project scaffold",
+  "private": true,
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/main.js",
+    "dev": "node --watch src/main.js",
+    "test": "node --test tests/",
+    "lint": "eslint src/"
+  },
+  "license": "MIT"
+}

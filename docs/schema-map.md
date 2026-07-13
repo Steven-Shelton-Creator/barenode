@@ -85,7 +85,16 @@ Master index: `docs/workflow-reflections.md`
 │   │   ├── 02-history.md    #     ✅ Complete
 │   │   ├── 03-instructions.md   # ✅ Complete
 │   │   ├── 04-context.md    #     ✅ Complete
-│   │   └── 05-14.md         #     ❌ Stubs (not started)
+│   │   ├── 05-tools.md      #     ❌ Stub
+│   │   ├── 06-compaction.md #     ❌ Stub
+│   │   ├── 07-skills.md     #     ❌ Stub
+│   │   ├── 08-sandbox.md    #     ❌ Stub
+│   │   ├── 09-memory.md     #     ❌ Stub
+│   │   ├── 10-planner.md    #     ❌ Stub
+│   │   ├── 11-subagents.md  #     ❌ Stub
+│   │   ├── 12-verification.md   # ❌ Stub
+│   │   ├── 13-observability.md  # ❌ Stub
+│   │   └── 14-ui.md         #     ❌ Stub
 │   ├── verification/        #   Test run logs per chapter
 │   │   ├── CH01-verification.md  # ✅ Complete
 │   │   ├── CH02-verification.md  # ✅ Complete
@@ -222,6 +231,26 @@ Master index: `docs/workflow-reflections.md`
 | ADR-003 | CH01 Provider Abstraction & REPL | Closed |
 | ADR-004 | CH02 Provider Signature Change | Closed |
 | ADR-005 | Intake Valve — Memory-Only Credential Security | Closed |
+| ADR-006 | CH04 Context Delivery — @file Design | Closed |
+
+---
+
+## Recent Commits (Latest 10)
+
+| Commit | Description |
+|--------|-------------|
+| `9a8bad7` | **CH04: implement context delivery — @file reference injection** |
+| `3a8f940` | docs: add Recent Commits table to schema map, update AGENTS.md tracking instruction |
+| `a527a49` | docs: add end-of-day summary to session log |
+| `60d8e28` | docs: add CH03 verification log with real model results |
+| `b168dc2` | **CH03: implement instructions — system prompt loader, AGENTS.md auto-load, workspace** |
+| `aee9a51` | docs: ADR-005 — intake valve credential security model |
+| `fb27384` | security: intake valve uses memory-only credential helper |
+| `d31cfa7` | docs: add CHANGELOG.md with full commit history organized by tag |
+| `9bdf45e` | feat: add intake valve — credential/configuration bootstrap for agent |
+| `eeed4c5` | chore: add self-orientation and tracking update instructions to AGENTS.md |
+
+> Full history: `CHANGELOG.md` (organized by tag) or `git log --oneline`
 
 ---
 

@@ -1,6 +1,8 @@
 # Phase 0 — Foundation
 
+**Phase:** 0
 **Status:** ✅ Complete
+**Date:** 2026-07-11
 
 ---
 

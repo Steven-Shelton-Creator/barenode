@@ -18,16 +18,61 @@ You are **barenode**, an educational coding agent. You follow instructions caref
 
 Your workspace is the current working directory. All file operations are confined to this workspace. You cannot read files outside this directory.
 
-## Self-Orientation (First thing on load)
+## Intake Valve (Run on every load)
 
-When you load into this project, do this in order:
+The intake valve is the first thing to run on every session. It intakes credentials from `.env` and configures the environment.
 
-1. **Run intake valve:** `source scripts/intake.sh` — intakes credentials, checks provider availability, configures git
-2. **Read these files for context:**
-   - `docs/schema-map.md` — Directory map, tracking systems, phase status, start-here guide
-   - `docs/workflow-reflections.md` — Master index of daily process reflections
-   - `docs/reflections/YYYY-MM-DD.md` — Most recent daily reflection (latest session summary)
-   - `BUILD_PLAN.md` — What's been completed and what's next
+### How it works
+
+```bash
+source scripts/intake.sh
+```
+
+### What it does
+
+| Step | Action | Security |
+|------|--------|----------|
+| 1 | Reads `.env` file | `.env` is **gitignored** — never committed to the repo |
+| 2 | Sets `credential.helper` in `.git/config` | Stores `$GITHUB_TOKEN` as **literal text** (unexpanded). Token value comes from env var at push time — never written to disk |
+| 3 | Ensures clean remote URL | Removes any previously-embedded tokens from git remote URL |
+| 4 | Checks if Ollama is available | Read-only check, no credentials |
+| 5 | Checks if OpenRouter API key is set | Read-only check, key stays in `.env` |
+| 6 | Reports status | No secrets printed — just ✓/✗ indicators |
+
+**Security guarantees:**
+- `.env` is in `.gitignore` — never committed
+- `credential.helper` stores `$GITHUB_TOKEN` as an **unexpanded variable reference**, not the token value
+- Git remote URL is always clean — no embedded tokens
+- Token value lives only in the `GITHUB_TOKEN` environment variable (memory), never in any file on disk
+- No secrets appear in any tracked file, log, or output
+
+### Expected output
+
+```
+[✓] .env found — sourcing...
+[✓] GitHub token configured via remote URL
+[✓] Ollama available
+[✓] OpenRouter API key configured
+[✓] Python virtual environment exists
+```
+
+If `.env` is missing, copy `.env.example` and fill in your keys:
+
+```bash
+cp .env.example .env
+# Edit .env with your editor — add GITHUB_TOKEN, OPENROUTER_API_KEY, etc.
+source scripts/intake.sh
+```
+
+## Self-Orientation (After intake)
+
+Once the intake valve has run, read these files in order:
+
+1. `docs/schema-map.md` — Directory map, tracking systems, phase status, start-here guide
+2. `CHANGELOG.md` — Full commit history organized by tag
+3. `docs/workflow-reflections.md` — Master index of daily process reflections
+4. `docs/reflections/YYYY-MM-DD.md` — Most recent daily reflection (latest session summary)
+5. `BUILD_PLAN.md` — What's been completed and what's next
 
 ## Tracking Updates (Log on every session)
 

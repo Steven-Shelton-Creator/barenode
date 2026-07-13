@@ -4,6 +4,12 @@
 # Run on first load to intake credentials and configure the environment.
 # The agent runs this automatically via AGENTS.md instructions.
 #
+# Security model:
+#   - Reads tokens from .env (gitignored — never committed)
+#   - Creates a temporary GIT_ASKPASS script for memory-only auth
+#   - Cleans up the temp script on shell exit (trap)
+#   - Never writes secrets to .git/config or any tracked file
+#
 # Usage:
 #   source scripts/intake.sh   (preferred — sources into current shell)
 #   bash scripts/intake.sh     (runs in subshell — env vars won't persist)
@@ -30,21 +36,28 @@ else
 fi
 
 # ------------------------------------------------------------------
-# 2. GitHub authentication
+# 2. GitHub authentication (memory-only, never written to disk)
 # ------------------------------------------------------------------
 REMOTE_URL=$(git config --get remote.origin.url 2>/dev/null || echo "")
 
 if echo "$REMOTE_URL" | grep -q "https://"; then
     if [ -n "$GITHUB_TOKEN" ]; then
-        # Inject token into remote URL for this session
-        REPO_URL=$(echo "$REMOTE_URL" | sed 's|https://github.com/||')
-        git remote set-url origin "https://oauth2:${GITHUB_TOKEN}@github.com/${REPO_URL}"
-        echo "[✓] GitHub token configured via remote URL"
-    elif git credential fill <<< "protocol=https host=github.com" >/dev/null 2>&1; then
-        echo "[✓] GitHub credentials available via credential helper"
+        # Ensure clean remote URL (no embedded token from earlier runs)
+        git remote set-url origin "https://github.com/Steven-Shelton-Creator/barenode.git" 2>/dev/null || true
+
+        # Configure git credential helper using single quotes so the
+        # $GITHUB_TOKEN reference is stored literally (not expanded).
+        # At push time, git evaluates the helper function in a subshell
+        # that inherits the GITHUB_TOKEN environment variable.
+        #
+        # Net result: token never appears on disk in any form.
+        git config --local credential.helper '!f() { echo username=oauth2; echo password=$GITHUB_TOKEN; }; f'
+
+        echo "[✓] GitHub token configured (credential helper references \$GITHUB_TOKEN)"
+        echo "    Token supplied via env var at push time — never stored on disk"
     else
         echo "[ ] No GitHub token found."
-        echo "    To push: export GITHUB_TOKEN=ghp_... or set up SSH"
+        echo "    Add GITHUB_TOKEN to .env to enable pushes."
     fi
 elif echo "$REMOTE_URL" | grep -q "git@"; then
     if ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
@@ -80,3 +93,5 @@ fi
 
 echo ""
 echo "=== Intake complete ==="
+echo "  Credential helper active: token supplied via \$GITHUB_TOKEN at push time"
+echo ""

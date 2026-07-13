@@ -44,6 +44,7 @@ Whenever work is completed, update the appropriate tracking files automatically.
 | **Decision record** | `DECISIONS.md` | When architectural choice is made — add ADR entry |
 | **Build plan** | `BUILD_PLAN.md` | After chapter completion — mark ✅ |
 | **Roadmap** | `ROADMAP.md` | After chapter completion — mark [x] |
+| **Changelog** | `CHANGELOG.md` | After every commit — add entry under current tag with summary |
 | **Schema map** | `docs/schema-map.md` | After structural changes — update header dates and status tables |
 
 ## The Observed Chapter Cycle

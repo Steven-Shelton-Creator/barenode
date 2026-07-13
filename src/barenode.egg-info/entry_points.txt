@@ -1,0 +1,5 @@
+[console_scripts]
+agent = main:repl
+demo = main:demo
+tui = ui.app:run
+verify = harness.verify:run

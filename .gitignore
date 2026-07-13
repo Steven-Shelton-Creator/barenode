@@ -1,9 +1,9 @@
-__pycache__/
-*.pyc
-.venv/
-.env
-logs/
+*.egg-info/.env
 *.jsonl
+*.pyc
 .DS_Store
+.env
 .ruff_cache/
-*.egg-info/
+.venv/
+__pycache__/
+logs/

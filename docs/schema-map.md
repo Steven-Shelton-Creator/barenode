@@ -14,10 +14,11 @@
 When you load up fresh, read these in order:
 
 1. **This file** — get your bearings
-2. **`docs/workflow-reflections.md`** — master index of daily process reflections
-3. **`docs/reflections/YYYY-MM-DD.md`** — most recent daily reflection (what we did last session)
-4. **`docs/2026-07-12-session.md`** — most recent session log (detailed checklist)
-5. **`BUILD_PLAN.md`** — what's next on the chapter roadmap
+2. **`CHANGELOG.md`** — full commit history organized by tag/release
+3. **`docs/workflow-reflections.md`** — master index of daily process reflections
+4. **`docs/reflections/YYYY-MM-DD.md`** — most recent daily reflection (what we did last session)
+5. **`docs/2026-07-12-session.md`** — most recent session log (detailed checklist)
+6. **`BUILD_PLAN.md`** — what's next on the chapter roadmap
 
 ---
 
@@ -125,6 +126,7 @@ Master index: `docs/workflow-reflections.md`
 ├── DECISIONS.md             # ADR records (ADR-001 through ADR-004)
 ├── CONTRIBUTING.md          # Development guide
 ├── README.md                # Project intro
+├── CHANGELOG.md              # Full commit history organized by tag/release
 ├── transcript.md            # Full video transcript (8500 lines)
 ├── pyproject.toml           # UV project config
 ├── uv.lock                  # UV dependency lockfile
@@ -221,5 +223,6 @@ Master index: `docs/workflow-reflections.md`
 | What are the test results? | `docs/verification/CHXX-verification.md` |
 | What does the architecture look like? | `ARCHITECTURE.md` |
 | What does the agent system prompt say? | `AGENTS.md` |
+| What's the full commit history? | `CHANGELOG.md` |
 | What's the full video transcript? | `transcript.md` |
 | What model should I use? | `.env.example` |

@@ -87,10 +87,15 @@ $ uv run demo
 barenode demo — CH03
 4 messages tracked, system prompt loaded from AGENTS.md
 
-$ uv run agent  (with real model)
-> Who are you?  → I am barenode, a helpful coding assistant...
+$ uv run agent  (with real model — gemma4:e4b)
+> Who are you?  → I am barenode, a helpful coding assistant and educational agent.
 > What is your name?  → My name is barenode.
+> What are your rules?  → (Describes chapter cycle, tracking, security — all from AGENTS.md)
+> My name is Steven.
+> What is my name?  → Your name is Steven.  (CH02 history still works)
 ```
+
+**Confirmed:** Agent loads instructions from AGENTS.md, remembers conversation across turns.
 
 ## Reference Images
 

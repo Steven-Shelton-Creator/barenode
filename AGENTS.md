@@ -90,7 +90,7 @@ Whenever work is completed, update the appropriate tracking files automatically.
 | **Build plan** | `BUILD_PLAN.md` | After chapter completion — mark ✅ |
 | **Roadmap** | `ROADMAP.md` | After chapter completion — mark [x] |
 | **Changelog** | `CHANGELOG.md` | After every commit — add entry under current tag with summary |
-| **Schema map** | `docs/schema-map.md` | After structural changes — update header dates and status tables |
+| **Schema map** | `docs/schema-map.md` | After structural changes or new commits — update header dates, status tables, and Recent Commits table |
 
 ## The Observed Chapter Cycle
 

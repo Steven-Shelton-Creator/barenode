@@ -214,6 +214,25 @@ Master index: `docs/workflow-reflections.md`
 
 ---
 
+## Recent Commits (Latest 10)
+
+| Commit | Description |
+|--------|-------------|
+| `a527a49` | docs: add end-of-day summary to session log |
+| `60d8e28` | docs: add CH03 verification log with real model results |
+| `b168dc2` | **CH03: implement instructions — system prompt loader, AGENTS.md auto-load, workspace** |
+| `aee9a51` | docs: ADR-005 — intake valve credential security model |
+| `fb27384` | security: intake valve uses memory-only credential helper |
+| `d31cfa7` | docs: add CHANGELOG.md with full commit history organized by tag |
+| `9bdf45e` | feat: add intake valve — credential/configuration bootstrap for agent |
+| `eeed4c5` | chore: add self-orientation and tracking update instructions to AGENTS.md |
+| `7d1057e` | chore: finalize tracking — normalize phase doc headers |
+| `94cdd29` | chore: expand schema map — add tracking systems, phase status table |
+
+> Full history: `CHANGELOG.md` (organized by tag) or `git log --oneline`
+
+---
+
 ## Quick Reference: Where to Find Things
 
 | What you need | Go to |

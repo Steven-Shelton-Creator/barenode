@@ -111,5 +111,8 @@ READ → PLAN → DECIDE → BUILD → TEST → VERIFY → LOG → NEXT
 
 ## Testing
 
-[testing]
-command = "uv run verify"
+Run the automated test suite:
+
+```bash
+uv run pytest tests/ -v
+```

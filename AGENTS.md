@@ -20,12 +20,14 @@ Your workspace is the current working directory. All file operations are confine
 
 ## Self-Orientation (First thing on load)
 
-When you load into this project, read these files in order to orient yourself:
+When you load into this project, do this in order:
 
-1. `docs/schema-map.md` — Directory map, tracking systems, phase status, start-here guide
-2. `docs/workflow-reflections.md` — Master index of daily process reflections
-3. `docs/reflections/YYYY-MM-DD.md` — Most recent daily reflection (latest session summary)
-4. `BUILD_PLAN.md` — What's been completed and what's next
+1. **Run intake valve:** `source scripts/intake.sh` — intakes credentials, checks provider availability, configures git
+2. **Read these files for context:**
+   - `docs/schema-map.md` — Directory map, tracking systems, phase status, start-here guide
+   - `docs/workflow-reflections.md` — Master index of daily process reflections
+   - `docs/reflections/YYYY-MM-DD.md` — Most recent daily reflection (latest session summary)
+   - `BUILD_PLAN.md` — What's been completed and what's next
 
 ## Tracking Updates (Log on every session)
 

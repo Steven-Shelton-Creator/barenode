@@ -20,7 +20,7 @@
 - [x] **CH01** — Model: bare stateless chat call
 - [x] **CH02** — History: message list, append, replay
 - [x] **CH03** — Instructions: system prompt, agents.md loader
-- [ ] **CH04** — Context Delivery: @file injection
+- [x] **CH04** — Context Delivery: @file injection
 
 *End state: REPL-based agent that remembers the conversation and follows instructions.*
 

@@ -10,6 +10,7 @@ import os
 
 from model.provider import chat
 from harness.instructions import build_system_message
+from harness.context import deliver
 
 
 class Agent:
@@ -39,11 +40,16 @@ class Agent:
     def send(self, message: str) -> str:
         """Append a user message and return the model's reply.
 
+        Before storing, the message is scanned for ``@path`` references
+        (CH04 — context delivery).  Matching files are read from the
+        workspace and their contents are injected inline.
+
         The full message history plus the system instruction message
         is sent with every call.  The instruction message is rebuilt
         fresh each time and is **not** appended to ``self.messages``.
         """
-        self.messages.append({"role": "user", "content": message})
+        resolved = deliver(message, self.workspace)
+        self.messages.append({"role": "user", "content": resolved})
 
         # Build the messages to send: system prompt + conversation
         sys_msg = build_system_message(self.workspace)

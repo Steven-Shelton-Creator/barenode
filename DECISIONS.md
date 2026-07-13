@@ -247,3 +247,57 @@ source scripts/intake.sh
 - The credential helper reference in `.git/config` is inert without the env var — safe to leave between sessions
 - Pushing from a subshell without sourcing intake first will fail (expected — feature, not bug)
 - All future git operations (push, pull, fetch) work transparently after intake
+
+---
+
+## ADR-006: CH04 — Context Delivery Design
+
+**Status:** Closed
+
+**Date:** 2026-07-13
+
+### Context
+
+Chapter 04 adds context delivery — the `@file` syntax where the harness scans the user's message for `@path` references, reads the files from disk, and injects their contents before the model call.
+
+We needed to decide:
+1. How to mark file references (symbol choice)
+2. Where in the message pipeline injection happens
+3. How to format injected content
+4. Security boundaries
+5. Behavior on missing files
+
+### Options Considered
+
+| Aspect | Option A (chosen) | Option B | Option C |
+|--------|-------------------|----------|----------|
+| **Symbol** | `@filename` | `#filename` | `[file:path]` |
+| **Injection point** | Before storing in `self.messages` | In `messages_to_send` only | In a separate context message |
+| **Format** | `--- path ---\ncontent\n--- end path ---` | Inline replacement only | JSON-wrapped block |
+| **Missing file** | Leave `@ref` unchanged | Raise error | Empty injection |
+| **Security** | Workspace prefix check | Glob patterns | No check |
+
+### Decision
+
+| Choice | Value | Rationale |
+|--------|-------|-----------|
+| **Symbol** | `@` | Matches the video source material. Common convention (Claude Code, Codex). Distinctive, unlikely to appear naturally in text. |
+| **Injection point** | Before storing in `self.messages` | Simplest wiring (2 lines). History stores resolved content, so the model sees file contents on replay too. |
+| **Format** | `--- path ---\ncontent\n--- end path ---` with content preceded by markers | Clear visual boundary. Easier for the model to distinguish file content from the user's question. |
+| **Missing file** | Leave `@ref` unchanged | Graceful fallback — model can ask the user for the correct path. No crash, no confusing error message. |
+| **Security** | Workspace prefix check with `os.path.abspath()` | Blocks `@../etc/passwd` style escapes. Simple, verifiable, no dependencies. |
+
+### Rationale
+
+- The `@` symbol is minimal, intuitive, and matches the source material
+- Injecting before storing means the history is always resolved — the model doesn't need to re-read files on subsequent turns
+- Markers provide a clear visual boundary that makes it obvious to the model what's file content vs. user text
+- The workspace prefix check is a simple security boundary that prevents path traversal attacks
+- Graceful fallback for missing files means the agent never crashes on bad references
+
+### Consequences
+
+- The stored history contains resolved file contents, not `@refs` — if files change between turns, stale content persists in history
+- No token management yet — large files are injected whole (CH06 adds compression)
+- The REPL and demo needed zero structural changes — the injection is transparent to the UI layer
+- The security boundary is enforced at the string level (startswith), not the filesystem level (realpath) — sufficient for an educational build

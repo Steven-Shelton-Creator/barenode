@@ -7,6 +7,42 @@ and this project adheres to **chapter tags** (CH00, CH01, CH02, ...).
 
 ---
 
+## [CH04] — 2026-07-13 — Context Delivery
+
+### Added
+- `src/harness/context.py`: `deliver()` function — scans for `@path` references, reads files from workspace, injects content inline with markers
+- `tests/test_ch04.py`: 15 tests — 10 unit, 4 integration, 1 regression
+- `docs/2026-07-13-session.md`: Session log
+- `docs/reflections/2026-07-13.md`: Daily reflection
+- `docs/verification/CH04-verification.md`: Verification log — fake + real model
+
+### Changed
+- `src/harness/agent.py`: Wired `deliver()` into `send()` — 2 lines added
+- `src/main.py`: Demo updated to CH04 label, added @missing.txt test message
+- `docs/phases/04-context.md`: Status → ✅ Complete, learnings filled
+- `BUILD_PLAN.md`: CH04 marked complete
+- `ROADMAP.md`: CH04 marked complete
+
+---
+
+## [CH03] — 2026-07-12 — Instructions
+
+### Added
+- `src/harness/instructions.py`: `load_instructions()`, `make_system_prompt()`, `build_system_message()` — system prompt builder with AGENTS.md auto-loader
+- `tests/test_ch03.py`: 9 tests — loader, builder, and agent integration
+- `docs/verification/CH03-verification.md`: Verification log
+- `scripts/intake.sh`: Memory-only credential/configuration bootstrap
+
+### Changed
+- `src/harness/agent.py`: Added `workspace` param, system message prepended fresh each turn
+- `src/main.py`: Default model updated to `gemma4:e4b`, demo labels CH03
+- `AGENTS.md`: Self-orientation instructions, tracking update table, intake valve instructions
+- `DECISIONS.md`: Added ADR-005 (intake valve credential security)
+- `BUILD_PLAN.md`: CH03 marked complete
+- `ROADMAP.md`: CH03 marked complete
+
+---
+
 ## [CH02] — 2026-07-12 — Conversation History
 
 ### Added

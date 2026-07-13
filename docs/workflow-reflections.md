@@ -13,7 +13,8 @@ This is the master index for all daily workflow reflection files. Each day's ref
 | Date | File | Chapter(s) | Key Events |
 |------|------|------------|------------|
 | 2026-07-11 | `docs/reflections/2026-07-11.md` | CH00, CH01 | Scaffold, provider seam, model REPL, workflow pattern identified |
-| 2026-07-12 | `docs/reflections/2026-07-12.md` | CH02 | Conversation history, provider signature change, ADR-004 |
+| 2026-07-12 | `docs/reflections/2026-07-12.md` | CH02, CH03 | History, instructions, context tracking fixup |
+| 2026-07-13 | `docs/reflections/2026-07-13.md` | CH04 | Context delivery (@file), deliver(), workspace security |
 
 ---
 

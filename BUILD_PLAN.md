@@ -25,7 +25,7 @@ Each milestone maps to one chapter / git tag. Every chapter builds one primitive
 | Step | Tag    | What We Build                          | Files Touched                    |
 |------|--------|----------------------------------------|----------------------------------|
 | 3    | `CH03` | ✅ Instructions + `agents.md` + workspace | `src/harness/instructions.py`, `src/harness/agent.py`, `tests/test_ch03.py` |
-| 4    | `CH04` | Context delivery (`@file` references)  | `src/harness/context.py`         |
+| 4    | `CH04` | Context delivery (`@file` references)  | ✅ Complete | `src/harness/context.py` |
 
 **Demo:** Create `agents.md` with personality. Reference `@facts.txt` — model reads and answers from it.
 

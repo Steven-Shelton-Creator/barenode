@@ -1,10 +1,10 @@
 # barenode Schema Map
 
 > Quick-reference directory map for fresh session orientation.  
-> **Last updated:** 2026-07-12  
-> **Tags:** CH01, CH02  
+> **Last updated:** 2026-07-13  
+> **Tags:** CH01, CH02, CH03, CH04  
 > **Branch:** `master`  
-> **HEAD:** `1203984` — chore: fix context tracking  
+> **HEAD:** `3a8f940` (pre-CH04) — CH04 commit pending  
 > **Remote:** `origin` → `github.com/Steven-Shelton-Creator/barenode.git`
 
 ---
@@ -17,7 +17,7 @@ When you load up fresh, read these in order:
 2. **`CHANGELOG.md`** — full commit history organized by tag/release
 3. **`docs/workflow-reflections.md`** — master index of daily process reflections
 4. **`docs/reflections/YYYY-MM-DD.md`** — most recent daily reflection (what we did last session)
-5. **`docs/2026-07-12-session.md`** — most recent session log (detailed checklist)
+5. **`docs/2026-07-13-session.md`** — most recent session log (detailed checklist)
 6. **`BUILD_PLAN.md`** — what's next on the chapter roadmap
 
 ---
@@ -43,13 +43,13 @@ Master index: `docs/workflow-reflections.md`
 ├── src/                     # Source code (3 packages)
 │   ├── model/               #   Provider abstraction (provider seam)
 │   │   ├── __init__.py
-│   │   ├── provider.py      #     chat() — 4 backends (ollama, openrouter, lstudio, fake)
+│   │   ├── provider.py      #     chat(messages: list[dict]) — 4 backends
 │   │   └── pricing.py       #     Cost tables (CH13 stub)
 │   ├── harness/             #   Agent loop & primitives
 │   │   ├── __init__.py
-│   │   ├── agent.py         #     Agent class with send() — CH02 has history
-│   │   ├── instructions.py  #     CH03 stub
-│   │   ├── context.py       #     CH04 stub
+│   │   ├── agent.py         #     Agent class — CH02 history, CH03 instructions, CH04 @file
+│   │   ├── instructions.py  #     ✅ CH03 — system prompt + AGENTS.md loader
+│   │   ├── context.py       #     ✅ CH04 — @file context delivery
 │   │   ├── tools.py         #     CH05 stub
 │   │   ├── compaction.py    #     CH06 stub
 │   │   ├── limits.py        #     CH06 stub
@@ -70,20 +70,27 @@ Master index: `docs/workflow-reflections.md`
 │   ├── __init__.py
 │   ├── test_smoke.py        #   Import checks (2 tests)
 │   ├── test_ch01.py         #   CH01 stateless model tests (4 tests)
-│   └── test_ch02.py         #   CH02 history tests (4 tests)
+│   ├── test_ch02.py         #   CH02 history tests (4 tests)
+│   ├── test_ch03.py         #   CH03 instructions tests (9 tests)
+│   └── test_ch04.py         #   CH04 context delivery tests (15 tests)
 │
 ├── docs/                    # Documentation
 │   ├── reflections/         #   [TRACKING SYSTEM 3] Daily process reflections
 │   │   ├── 2026-07-11.md    #     Day 1: CH00+CH01 (scaffold, model)
-│   │   └── 2026-07-12.md    #     Day 2: CH02 (history)
+│   │   ├── 2026-07-12.md    #     Day 2: CH02+CH03 (history, instructions)
+│   │   └── 2026-07-13.md    #     Day 3: CH04 (context delivery)
 │   ├── phases/              #   [TRACKING SYSTEM 1] Chapter blueprints
 │   │   ├── 00-foundation.md #     ✅ Complete
 │   │   ├── 01-model.md      #     ✅ Complete
 │   │   ├── 02-history.md    #     ✅ Complete
-│   │   └── 03-14.md         #     ❌ Stubs (not started)
+│   │   ├── 03-instructions.md   # ✅ Complete
+│   │   ├── 04-context.md    #     ✅ Complete
+│   │   └── 05-14.md         #     ❌ Stubs (not started)
 │   ├── verification/        #   Test run logs per chapter
 │   │   ├── CH01-verification.md  # ✅ Complete
-│   │   └── CH02-verification.md  # ✅ Complete
+│   │   ├── CH02-verification.md  # ✅ Complete
+│   │   ├── CH03-verification.md  # ✅ Complete
+│   │   └── CH04-verification.md  # ✅ Complete
 │   ├── research/images/     #   24 reference screenshots (ch01-ch14)
 │   │   ├── ch01/            #     2 images
 │   │   ├── ch02/            #     1 image
@@ -108,13 +115,15 @@ Master index: `docs/workflow-reflections.md`
 │   ├── repo-foundation.md   #   Early outline document
 │   ├── github-token-guide.md    #   Reference doc
 │   ├── 2026-07-11-session.md    #   [TRACKING SYSTEM 2] Session log — Day 1
-│   └── 2026-07-12-session.md    #   [TRACKING SYSTEM 2] Session log — Day 2
+│   ├── 2026-07-12-session.md    #   [TRACKING SYSTEM 2] Session log — Day 2
+│   └── 2026-07-13-session.md    #   [TRACKING SYSTEM 2] Session log — Day 3
 │
 ├── skills/                  # Skill directories (progressive disclosure)
 │   └── sign-off/
 │       └── skill.md         #   Signs off with code word "hila"
 │
-├── scripts/                 # Run scripts (empty)
+├── scripts/                 # Run scripts
+│   └── intake.sh            #   Credential/configuration bootstrap
 ├── examples/                # Demo scenarios (empty)
 ├── logs/                    # Runtime logs (empty)
 ├── workspace/               # Sandbox working directory (empty)
@@ -123,11 +132,11 @@ Master index: `docs/workflow-reflections.md`
 ├── ARCHITECTURE.md          # Three-package layering
 ├── BUILD_PLAN.md            # Phase-by-phase blueprint (master tracker)
 ├── ROADMAP.md               # Long-term vision
-├── DECISIONS.md             # ADR records (ADR-001 through ADR-004)
+├── DECISIONS.md             # ADR records (ADR-001 through ADR-005)
 ├── CONTRIBUTING.md          # Development guide
 ├── README.md                # Project intro
-├── CHANGELOG.md              # Full commit history organized by tag/release
-├── transcript.md            # Full video transcript (8500 lines)
+├── CHANGELOG.md             # Full commit history organized by tag/release
+├── transcript.md            # Full video transcript (130 lines)
 ├── pyproject.toml           # UV project config
 ├── uv.lock                  # UV dependency lockfile
 ├── .env.example             # Provider config template
@@ -143,8 +152,8 @@ Master index: `docs/workflow-reflections.md`
 | CH00 — Foundation | `docs/phases/00-foundation.md` | ✅ Complete |
 | CH01 — Model | `docs/phases/01-model.md` | ✅ Complete |
 | CH02 — History | `docs/phases/02-history.md` | ✅ Complete |
-| CH03 — Instructions | `docs/phases/03-instructions.md` | ❌ Stub |
-| CH04 — Context Delivery | `docs/phases/04-context.md` | ❌ Stub |
+| CH03 — Instructions | `docs/phases/03-instructions.md` | ✅ Complete |
+| CH04 — Context Delivery | `docs/phases/04-context.md` | ✅ Complete |
 | CH05 — Tools | `docs/phases/05-tools.md` | ❌ Stub |
 | CH06 — Context Management | `docs/phases/06-compaction.md` | ❌ Stub |
 | CH07 — Skills | `docs/phases/07-skills.md` | ❌ Stub |
@@ -187,6 +196,8 @@ Master index: `docs/workflow-reflections.md`
 |-----|---------|-------------|
 | `CH01` | Model | Bare model call, stateless REPL, provider seam |
 | `CH02` | History | Conversation history, in-memory message list |
+| `CH03` | Instructions | System prompt + AGENTS.md auto-load + workspace |
+| `CH04` | Context Delivery | `@file` reference injection via deliver() |
 
 ---
 
@@ -194,7 +205,7 @@ Master index: `docs/workflow-reflections.md`
 
 | Tier | Chapters | Status |
 |------|----------|--------|
-| 1 — Core Agent | CH01–04 | 50% complete (CH01-02 done, CH03-04 stubs) |
+| 1 — Core Agent | CH01–04 | ✅ **100% complete** |
 | 2 — Action Layer | CH05–08 | ❌ Not started (stubs only) |
 | 3 — Intelligence | CH09–11 | ❌ Not started (stubs only) |
 | 4 — Reliability | CH12–13 | ❌ Not started (stubs only) |
@@ -214,33 +225,14 @@ Master index: `docs/workflow-reflections.md`
 
 ---
 
-## Recent Commits (Latest 10)
-
-| Commit | Description |
-|--------|-------------|
-| `a527a49` | docs: add end-of-day summary to session log |
-| `60d8e28` | docs: add CH03 verification log with real model results |
-| `b168dc2` | **CH03: implement instructions — system prompt loader, AGENTS.md auto-load, workspace** |
-| `aee9a51` | docs: ADR-005 — intake valve credential security model |
-| `fb27384` | security: intake valve uses memory-only credential helper |
-| `d31cfa7` | docs: add CHANGELOG.md with full commit history organized by tag |
-| `9bdf45e` | feat: add intake valve — credential/configuration bootstrap for agent |
-| `eeed4c5` | chore: add self-orientation and tracking update instructions to AGENTS.md |
-| `7d1057e` | chore: finalize tracking — normalize phase doc headers |
-| `94cdd29` | chore: expand schema map — add tracking systems, phase status table |
-
-> Full history: `CHANGELOG.md` (organized by tag) or `git log --oneline`
-
----
-
 ## Quick Reference: Where to Find Things
 
 | What you need | Go to |
 |---------------|-------|
-| What did we do last session? | `docs/reflections/YYYY-MM-DD.md` (most recent) |
+| What did we do last session? | `docs/reflections/2026-07-13.md` (most recent) |
 | What's the next chapter to build? | `BUILD_PLAN.md` |
 | What decisions did we make? | `DECISIONS.md` |
-| What are the test results? | `docs/verification/CHXX-verification.md` |
+| What are the test results? | `docs/verification/CH04-verification.md` |
 | What does the architecture look like? | `ARCHITECTURE.md` |
 | What does the agent system prompt say? | `AGENTS.md` |
 | What's the full commit history? | `CHANGELOG.md` |

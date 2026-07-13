@@ -40,7 +40,7 @@ def repl() -> None:
 
 def demo() -> None:
     """Scripted demo — ``uv run demo``."""
-    print("barenode demo — CH03")
+    print("barenode demo — CH04")
     print("=" * 40)
 
     model = os.environ.get("BARENODE_MODEL", "fake/echo")
@@ -49,6 +49,7 @@ def demo() -> None:
     messages = [
         "Hello! What is your name?",
         "Who are you?",
+        "What does @missing.txt say?",
     ]
 
     for i, msg in enumerate(messages):
@@ -61,7 +62,7 @@ def demo() -> None:
     print("\n" + "=" * 40)
     print(f"Messages tracked: {len(agent.messages)}")
     print("System prompt includes AGENTS.md content.")
-    print("With a real model, the agent would answer with its configured identity.")
+    print("@file references are resolved inline.")
 
 
 if __name__ == "__main__":

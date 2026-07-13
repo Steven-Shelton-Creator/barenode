@@ -170,3 +170,80 @@ All four provider implementations (`_call_ollama`, `_call_openrouter`, `_call_ls
 - The change rippled across 4 provider functions, but was mechanical and safe
 - The `chat()` function now matches the transcript's description: it sends a conversation, not a single message
 - Future chapters (CH03 instructions, CH04 context delivery) will add messages to the list naturally
+
+---
+
+## ADR-005: Intake Valve — Memory-Only Credential Security Model
+
+**Status:** Closed
+
+**Date:** 2026-07-12
+
+### Context
+
+The agent needed a way to authenticate with GitHub (push commits) and check provider availability without leaking credentials into the repository. Initial approaches had security issues:
+
+1. **Embedding token in remote URL** (v1 of `intake.sh`): `git remote set-url origin https://oauth2:TOKEN@github.com/...` — token written to `.git/config` on disk
+2. **GIT_ASKPASS temp script** (v2): Wrote token to a `/tmp/` script file — cleaned on exit but briefly on disk
+3. **Credential helper with expanded token** (v3): `git config --local credential.helper ...` with expanded token — token value written to `.git/config`
+
+We needed an approach that never writes the token value to any file, at any point.
+
+### Options Considered
+
+| Option | Disk writes | Token on disk? | Works? |
+|--------|-------------|-----------------|--------|
+| **Embedded remote URL** | `.git/config` | ✅ Token value | ✅ Push works |
+| **GIT_ASKPASS temp script** | `/tmp/` file | ✅ Token value | ✅ Push works |
+| **Credential helper, expanded** | `.git/config` | ✅ Token value | ✅ Push works |
+| **Credential helper, unexpanded** | `.git/config` | ❌ Only `$GITHUB_TOKEN` literal | ✅ Push works |
+
+### Decision
+
+**Option 4 — Credential helper storing unexpanded `$GITHUB_TOKEN` variable reference.**
+
+The `.git/config` file stores the literal string `$GITHUB_TOKEN`, not the token value. At push time, git evaluates the credential helper in a subshell that inherits the environment, so `$GITHUB_TOKEN` expands from the environment variable in memory.
+
+```bash
+# In .git/config (stored literally, never expanded):
+[credential]
+    helper = "!f() { echo username=oauth2; echo password=$GITHUB_TOKEN; }; f"
+
+# Token value comes from environment at push time:
+export GITHUB_TOKEN=github_pat_...  # in .env (gitignored) or env var
+```
+
+### Rationale
+
+- The token value **never touches disk** in any form — only the literal string `$GITHUB_TOKEN` is stored
+- Without the environment variable, the credential helper returns an empty password — zero value even if `.git/config` is exfiltrated
+- Works with standard git push/pull/fetch — no custom wrappers needed
+- The `.env` file (where the actual token lives) is gitignored
+- On shell exit, the environment variable disappears — only the inert `$GITHUB_TOKEN` reference remains
+
+### Intake Valve Flow
+
+```
+source scripts/intake.sh
+  → 1. Source .env (gitignored) — loads GITHUB_TOKEN into memory
+  → 2. Clean remote URL — remove any previously-embedded tokens
+  → 3. Set credential.helper with $GITHUB_TOKEN (literal, unexpanded)
+  → 4. Check provider availability (Ollama, OpenRouter)
+  → 5. Report status — no secrets printed, just ✓/✗ indicators
+```
+
+### Security Sweep (verified)
+
+| Check | Result |
+|-------|--------|
+| `git grep "github_pat"` — token in tracked files? | ✅ Zero results |
+| `git config --get remote.origin.url` — token in remote? | ✅ Clean HTTPS URL |
+| `.git/config` — token value on disk? | ✅ Only `$GITHUB_TOKEN` literal |
+| `.env` — gitignored? | ✅ Confirmed |
+
+### Consequences
+
+- Must run `source scripts/intake.sh` at the start of every session (or token won't be in environment)
+- The credential helper reference in `.git/config` is inert without the env var — safe to leave between sessions
+- Pushing from a subshell without sourcing intake first will fail (expected — feature, not bug)
+- All future git operations (push, pull, fetch) work transparently after intake

@@ -210,6 +210,7 @@ Master index: `docs/workflow-reflections.md`
 | ADR-002 | Project Language & Toolchain | Closed |
 | ADR-003 | CH01 Provider Abstraction & REPL | Closed |
 | ADR-004 | CH02 Provider Signature Change | Closed |
+| ADR-005 | Intake Valve — Memory-Only Credential Security | Closed |
 
 ---
 

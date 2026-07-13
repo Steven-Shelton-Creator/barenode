@@ -1,6 +1,8 @@
 # Phase 3 — Instructions
 
-**Status:** 📝 Not Started
+**Phase:** 3
+**Status:** ✅ Complete
+**Date:** 2026-07-12
 
 ---
 
@@ -14,41 +16,81 @@ Give the agent a standing personality and rules via a system prompt that's prepe
 - **`AGENTS.md` convention:** Same pattern as Codex and Claude Code — the harness auto-loads `AGENTS.md` from the working directory onto the system prompt.
 - **Workspace:** A directory the agent owns. Every path is confined to it.
 
-## Plan
-
-1. Add `self.system` to the Agent for the built-in prompt.
-2. Build `instructions.py` that reads `AGENTS.md` from the workspace.
-3. Merge both into a single system message on every turn.
-
 ## Files
 
-| File | Purpose |
-|------|---------|
-| `src/harness/instructions.py` | System prompt + AGENTS.md loader |
-| `src/harness/agent.py` | Wire instructions into send() |
-| `AGENTS.md` | Auto-loaded system prompt (already exists) |
+| File | Action |
+|------|--------|
+| `src/harness/instructions.py` | Written — `load_instructions()`, `make_system_prompt()`, `build_system_message()` |
+| `src/harness/agent.py` | Modified — added `workspace` param, system message prepended before every call |
+| `tests/test_ch03.py` | Created — 9 tests covering loader, builder, and agent integration |
+| `src/main.py` | Updated — default model to `gemma4:e4b`, demo labels CH03 |
+| `AGENTS.md` | Used as-is — auto-loaded from workspace |
+
+## Implementation Details
+
+### `instructions.py`
+
+Three public functions:
+
+- **`load_instructions(workspace)`** — Reads `AGENTS.md` from the workspace directory. Returns empty string if file is missing or unreadable (graceful fallback).
+- **`make_system_prompt(agents_content)`** — Combines a built-in prompt ("You are barenode, a helpful coding assistant built from scratch") with the AGENTS.md content.
+- **`build_system_message(workspace)`** — Returns a `{"role": "system", "content": ...}` dict, or `None` for graceful fallback.
+
+### `agent.py` changes
+
+| Addition | Purpose |
+|----------|---------|
+| `self.workspace` | Directory for AGENTS.md lookup (defaults to cwd) |
+| `build_system_message(self.workspace)` | Called on every `send()` to build fresh system message |
+| `messages_to_send` | System message + conversation history — rebuilt every turn, not stored in `self.messages` |
 
 ## Demo
 
 ```
 $ uv run agent
+> Who are you?
+I am barenode, a helpful coding assistant and educational agent.
 > What is your name?
-I am barenode, a helpful coding assistant.
+My name is barenode.
 > What are your rules?
-I follow the instructions in AGENTS.md — I'm concise, I use tools when needed, and I never expose secrets.
+(System prompt from AGENTS.md — chapter cycle, tracking, security)
 ```
-
-Without instructions, the model would answer "I'm an AI" or "I don't have a name."
 
 ## Acceptance Criteria
 
-- [ ] Agent responds with the personality defined in AGENTS.md
-- [ ] Changing AGENTS.md changes behavior without code changes
-- [ ] Absent AGENTS.md does not crash — graceful fallback
+- [x] Agent responds with the personality defined in AGENTS.md
+- [x] Changing AGENTS.md changes behavior without code changes
+- [x] Absent AGENTS.md does not crash — graceful fallback
+
+## Test Results
+
+```
+$ uv run pytest tests/ -v
+============================= 18 passed in 0.03s ==============================
+```
+
+CH03-specific tests (9 total):
+- 5 unit tests on `load_instructions()` and `make_system_prompt()`
+- 3 integration tests via Agent class
+- All tests pass with fake provider, no real model needed
 
 ## Learnings
 
-*(To be filled during implementation.)*
+- System messages should NOT be appended to `self.messages` — they're rebuilt fresh on every call to avoid accumulating stale instructions.
+- The `build_system_message()` returns `None` when there's no content, allowing the Agent to skip the system message entirely. This keeps the CH01/CH02 tests passing without modification.
+- The workspace concept maps naturally: AGENTS.md lives in the workspace, and future chapters will confine file tools to the same boundary.
+
+## Verification
+
+```
+$ uv run demo
+barenode demo — CH03
+4 messages tracked, system prompt loaded from AGENTS.md
+
+$ uv run agent  (with real model)
+> Who are you?  → I am barenode, a helpful coding assistant...
+> What is your name?  → My name is barenode.
+```
 
 ## Reference Images
 

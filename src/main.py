@@ -14,10 +14,8 @@ from harness.agent import Agent
 
 def repl() -> None:
     """Interactive REPL — ``uv run agent``."""
-    model = os.environ.get("BARENODE_MODEL", "ollama/qwen2.5:8b")
+    model = os.environ.get("BARENODE_MODEL", "ollama/gemma4:e4b")
     agent = Agent(model=model)
-
-    print(f"barenode [{model}]")
     print("Type /quit to exit.")
 
     while True:
@@ -42,7 +40,7 @@ def repl() -> None:
 
 def demo() -> None:
     """Scripted demo — ``uv run demo``."""
-    print("barenode demo — CH02")
+    print("barenode demo — CH03")
     print("=" * 40)
 
     model = os.environ.get("BARENODE_MODEL", "fake/echo")
@@ -50,8 +48,7 @@ def demo() -> None:
 
     messages = [
         "Hello! What is your name?",
-        "My name is Gemma.",
-        "What is my name?",
+        "Who are you?",
     ]
 
     for i, msg in enumerate(messages):
@@ -62,9 +59,9 @@ def demo() -> None:
             print(f"[error] {exc}")
 
     print("\n" + "=" * 40)
-    print(f"History now contains {len(agent.messages)} messages.")
-    print("The harness replays the full conversation on every call.")
-    print("With a real model, the agent would 'remember' your name.")
+    print(f"Messages tracked: {len(agent.messages)}")
+    print("System prompt includes AGENTS.md content.")
+    print("With a real model, the agent would answer with its configured identity.")
 
 
 if __name__ == "__main__":

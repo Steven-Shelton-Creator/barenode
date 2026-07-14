@@ -1,6 +1,6 @@
 # Phase 9 — Durable State / Memory
 
-**Status:** 📝 Not Started
+**Status:** ✅ Complete (2026-07-14)
 
 ---
 
@@ -14,19 +14,21 @@ Kill the agent and the whole conversation is gone. The harness needs to write se
 - **`memory.py`:** New module handling save, load, and search.
 - **Episodic search:** Plain keyword search across stored sessions (no embeddings) — borrowed from Hermes agent.
 
-## Plan
+## Plan (completed)
 
-1. Build `memory.py` — `save_session()`, `load_session()`, `search_sessions()`.
-2. Agent loads session on startup (hardcoded name for now).
-3. Agent saves session after every turn.
-4. Keyword search tool for retrieving past session content.
+1. ✅ Built `memory.py` — `save_session()`, `load_session()`, `clear_session()`, `list_sessions()`, `search_sessions()`
+2. ✅ Agent loads session on init, saves after every `send()`
+3. ✅ Session name from ``session_name`` param or ``BARENODE_SESSION`` env var
+4. ✅ Keyword search across sessions — case-insensitive substring match
 
 ## Files
 
 | File | Purpose |
 |------|---------|
-| `src/harness/memory.py` | JSONL persistence, keyword search |
-| `src/harness/agent.py` | Wire session load/save into send() |
+| `src/harness/memory.py` | JSONL persistence, keyword search, session management |
+| `src/harness/agent.py` | Session load on init, save after every send() |
+| `tests/test_ch09.py` | 20 tests — save/load, search, agent integration, regression |
+| `tests/conftest.py` | Unique session name per test (isolation) |
 
 ## Demo
 
@@ -47,15 +49,29 @@ The fact outlived the process that held it.
 
 ## Acceptance Criteria
 
-- [ ] Session saves to JSONL after every turn
-- [ ] Session loads on startup from disk
-- [ ] Kill and restart — conversation resumes
-- [ ] Keyword search across sessions returns relevant results
-- [ ] Session file is human-readable JSONL
+- [x] Session saves to JSONL after every turn
+- [x] Session loads on startup from disk
+- [x] Kill and restart — conversation resumes
+- [x] Keyword search across sessions returns relevant results
+- [x] Session file is human-readable JSONL
 
 ## Learnings
 
-*(To be filled during implementation.)*
+### Key Design Decisions
+- **JSONL format.** One JSON object per line. Human-readable, append-friendly, greppable.
+- **Full overwrite on save.** `save_session()` writes the entire message list on each call. This is safe for our scale (hundreds of messages, not millions).
+- **Session name from param or env var.** `session_name` parameter takes priority, falls back to `BARENODE_SESSION` env var, then `"default"`.
+- **Test isolation via conftest.** Each test gets a unique session name via `BARENODE_SESSION` env var so tests don't share state.
+
+### Real Model Demo
+```
+Session 1: "My name is Gemma."
+           "What is my name?"   → "Your name is Gemma."
+
+Session 2 (restart): loaded 4 messages from disk
+           "What was my name again?" → "Your name is Gemma."
+```
+The name "Gemma" survived the process restart.
 
 ## Reference Images
 

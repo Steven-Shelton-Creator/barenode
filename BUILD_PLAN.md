@@ -54,7 +54,8 @@ Each milestone maps to one chapter / git tag. Every chapter builds one primitive
 |      |        | ✅ frontmatter parser, prompt injection    | `src/harness/instructions.py`    |
 | 8    | `CH08` | ✅ Sandbox — Docker isolation, local fallback | `src/harness/sandbox.py`,          |
 |      |        | ✅ bash tool runs through sandbox          | `src/harness/tools.py`             |
-| 9    | `CH09` | Durable state — JSONL session files    | `src/harness/memory.py`          |
+| 9    | `CH09` | ✅ Durable state — JSONL session files    | `src/harness/memory.py`,          |
+|      |        | ✅ session load/save, keyword search      | `src/harness/agent.py`            |
 
 **Demo:** Skill loaded on demand from disk. Sandbox blocks `/etc/passwd`. Kill process, restart — session resumes.
 

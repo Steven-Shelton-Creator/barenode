@@ -7,6 +7,21 @@ and this project adheres to **chapter tags** (CH00, CH01, CH02, ...).
 
 ---
 
+## [CH09] — 2026-07-14 — Durable State / Memory
+
+### Added
+- `src/harness/memory.py`: `save_session()`, `load_session()`, `clear_session()`, `list_sessions()`, `search_sessions()` — JSONL persistence
+- `tests/test_ch09.py`: 20 tests — save/load, search, agent integration, regression
+- `tests/conftest.py`: Unique session name per test (isolation)
+
+### Changed
+- `src/harness/agent.py`: `session_name` + `session_dir` params, loads on init, saves after every send()
+- `docs/phases/09-memory.md`: Status → ✅ Complete, learnings filled
+- `BUILD_PLAN.md`: CH09 marked complete
+- `ROADMAP.md`: CH09 marked complete
+
+---
+
 ## [CH08] — 2026-07-14 — Sandbox
 
 ### Added

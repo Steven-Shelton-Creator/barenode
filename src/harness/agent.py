@@ -20,6 +20,7 @@ from harness.tools import default_registry, ToolRegistry
 from harness.approval import prompt_approval
 from harness.compaction import compact
 from harness.limits import MAX_CONTEXT_TOKENS
+from harness.memory import save_session, load_session
 
 # Maximum number of tool call iterations before the agent stops
 _MAX_TOOL_ITERATIONS = 6
@@ -46,14 +47,20 @@ class Agent:
         model: str | None = None,
         workspace: str | None = None,
         tools: ToolRegistry | None = None,
+        session_name: str | None = None,
+        session_dir: str | None = None,
     ) -> None:
         self.model = model or os.environ.get(
             "BARENODE_MODEL", "ollama/gemma4:e4b"
         )
         self.workspace = workspace or os.getcwd()
-        self.messages: list[dict] = []
         self.tools = tools or default_registry()
         self._context_budget = int(os.environ.get("BARENODE_CONTEXT_BUDGET", str(MAX_CONTEXT_TOKENS)))
+
+        # Session persistence (CH09)
+        self.session_name = session_name or os.environ.get("BARENODE_SESSION", "default")
+        self.session_dir = session_dir or os.environ.get("BARENODE_SESSION_DIR")
+        self.messages: list[dict] = load_session(self.session_name, self.session_dir)
 
     def send(self, message: str) -> str:
         """Append a user message and return the model's final text reply.
@@ -159,13 +166,20 @@ class Agent:
             # No tool calls — text response
             if response.content:
                 self.messages.append({"role": "assistant", "content": response.content})
+                self._save()
                 return response.content
 
             # Edge case: empty response
             self.messages.append({"role": "assistant", "content": ""})
+            self._save()
             return ""
 
         # Exceeded max iterations
         msg = f"[Agent] Tool loop exceeded {_MAX_TOOL_ITERATIONS} iterations. Stopping."
         self.messages.append({"role": "assistant", "content": msg})
+        self._save()
         return msg
+
+    def _save(self) -> None:
+        """Persist current messages to disk (CH09)."""
+        save_session(self.session_name, self.messages, self.session_dir)

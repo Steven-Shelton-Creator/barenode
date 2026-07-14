@@ -79,3 +79,26 @@ File written.
 | 2 | `docs/research/images/ch08/barenode-ch08-02.png` | *(to annotate)* |
 | 3 | `docs/research/images/ch08/barenode-ch08-03.png` | *(to annotate)* |
 | 4 | `docs/research/images/ch08/barenode-ch08-04.png` | *(to annotate)* |
+
+---
+
+## Sandbox Scope Clarification
+
+The sandbox is **not** the entire agent harness. It is specifically the execution
+environment for the **bash tool** only. Here's the full split:
+
+| Layer | Where it runs | Isolation |
+|-------|---------------|-----------|
+| Agent loop, tool registry, system prompt | Host (Python) | None needed — it's our code |
+| ``read_file`` / ``write_file`` | Host (Python ``open()``) | Path-fenced to workspace via ``os.path.abspath()`` (CH05) |
+| **bash tool** | **Docker sandbox** | ``--network none``, ``--read-only``, non-root user, memory/process caps |
+
+### Why this split?
+
+- **Calculator** (CH05) evaluates math expressions safely — no builtins, only ``math``
+  module. No shell execution needed.
+- **File tools** (CH05) are already safe because they validate paths against the
+  workspace boundary. No shell needed.
+- **Bash** (CH08) is the *only* tool that executes arbitrary shell commands. It's
+  the one that could do real damage (``rm -rf``, exfiltrate data, read system
+  files), so it's the only one that needs Docker isolation.

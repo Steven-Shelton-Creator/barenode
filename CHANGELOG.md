@@ -7,6 +7,36 @@ and this project adheres to **chapter tags** (CH00, CH01, CH02, ...).
 
 ---
 
+## [CH05] — 2026-07-14 — Tools
+
+### Added
+- `src/model/provider.py`: `ModelResponse` dataclass — structured return type (content + tool_calls)
+- `src/harness/tools.py`: `Tool` dataclass, `ToolRegistry`, `default_registry()` — calculator, read_file, write_file
+- `src/harness/approval.py`: `prompt_approval()` — y/n gate for dangerous operations
+- `tests/test_ch05.py`: 38 tests — full coverage
+
+### Changed
+- `src/harness/agent.py`: Tool loop wired into `send()` — capped at 6 iterations, workspace injection only for tools that need it
+- `src/model/provider.py`: `chat()` returns `ModelResponse`, all providers extract tool_calls, fake provider supports test simulation
+- `docs/phases/05-tools.md`: Status → ✅ Complete, learnings filled
+- `BUILD_PLAN.md`: CH05 marked complete
+- `ROADMAP.md`: CH05 marked complete
+
+---
+
+## [FIX] — 2026-07-14 — Git Branch Discipline
+
+### Fixed
+- Resolved detached HEAD at `CH01` tag — working tree was showing CH01 code instead of CH04
+
+### Added
+- `AGENTS.md`: Git Discipline guardrail + Git Branch Verification section
+
+### Changed
+- `docs/schema-map.md`: Updated HEAD hash to `9670fa7`
+
+---
+
 ## [CH04] — 2026-07-13 — Context Delivery
 
 ### Added

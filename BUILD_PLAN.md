@@ -35,9 +35,10 @@ Each milestone maps to one chapter / git tag. Every chapter builds one primitive
 
 | Step | Tag    | What We Build                          | Files Touched                    |
 |------|--------|----------------------------------------|----------------------------------|
-| 5    | `CH05` | Tool registry, calculator tool,        | `src/harness/tools.py`,          |
-|      |        | approval gates, sandbox scaffold       | `src/harness/sandbox.py`,        |
-|      |        |                                        | `src/harness/approval.py`        |
+| 5    | `CH05` | ✅ Tool registry, calculator tool,        | `src/harness/tools.py`,          |
+|      |        | ✅ approval gates                       | `src/harness/approval.py`,        |
+|      |        | ✅ tool loop in agent                   | `src/harness/agent.py`,           |
+|      |        | ✅ ModelResponse structured return      | `src/model/provider.py`          |
 | 6    | `CH06` | Context management (compress + clamp)  | `src/harness/compaction.py`,     |
 |      |        |                                        | `src/harness/limits.py`          |
 

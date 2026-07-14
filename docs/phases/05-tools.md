@@ -60,7 +60,15 @@ Blocked: path outside workspace.
 
 ## Learnings
 
-*(To be filled during implementation.)*
+### Key Design Decisions
+- **Tool = function + schema.** The `Tool` dataclass holds the function, its JSON schema, and metadata (approval, workspace needs).
+- **ModelResponse dataclass.** The provider now returns structured responses (content + tool_calls) instead of plain strings. This is a non-breaking change — existing tests pass.
+- **`needs_workspace` flag.** File tools (read_file, write_file) need the workspace path injected by the harness. Calculator does not. Rather than passing workspace to all tools, we mark which tools need it.
+- **Fake provider tool call simulation.** The fake provider supports a one-shot `_FAKE_NEXT_TOOL_CALLS` mechanism for tests. Each test queues the tool calls it wants the model to make, and the fake provider returns them on the next call.
+
+### Pain Points
+- **Workspace injection in all tools.** Initially injected workspace into every tool call, but calculator doesn't accept it. Fixed by adding `needs_workspace` flag.
+- **Test design for tool loop.** The fake provider's one-shot nature means we can't easily test the max iteration cap (which requires the model to *keep* calling tools). A future improvement could add a persistent fake mode.
 
 ## Reference Images
 

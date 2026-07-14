@@ -1,10 +1,10 @@
 # barenode Schema Map
 
 > Quick-reference directory map for fresh session orientation.  
-> **Last updated:** 2026-07-13  
+> **Last updated:** 2026-07-14  
 > **Tags:** CH01, CH02, CH03, CH04  
 > **Branch:** `master`  
-> **HEAD:** `3a8f940` (pre-CH04) — CH04 commit pending  
+> **HEAD:** `9670fa7` (post-CH04)  
 > **Remote:** `origin` → `github.com/Steven-Shelton-Creator/barenode.git`
 
 ---

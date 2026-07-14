@@ -28,7 +28,7 @@
 
 ## Tier 2 — Action Layer
 
-- [ ] **CH05** — Tools: function registry, calculator, approval gates
+- [x] **CH05** — Tools: function registry, calculator, approval gates
 - [ ] **CH06** — Context Management: compression, clamping
 - [ ] **CH07** — Skills: progressive disclosure, skill.md loader
 - [ ] **CH08** — Sandbox: Docker isolation, workspace fencing

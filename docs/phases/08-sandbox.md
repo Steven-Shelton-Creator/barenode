@@ -1,6 +1,6 @@
 # Phase 8 — Sandbox
 
-**Status:** 📝 Not Started
+**Status:** ✅ Complete (2026-07-14)
 
 ---
 
@@ -15,20 +15,21 @@ All code execution has been running on the host machine. The model will happily 
 - **Fallback:** If Docker isn't available, run in a scrubbed local subprocess.
 - **Workspace fencing:** Read-file is confined to the workspace — the model cannot reach `/etc/passwd`.
 
-## Plan
+## Plan (completed)
 
-1. Build `sandbox.py` with Docker sandbox execution.
-2. Non-root user, read-only rootfs, no network, memory/process caps.
-3. Fallback to scrubbed subprocess if Docker is absent.
-4. Fence the read-file tool to the workspace directory.
-5. Wire sandbox into the bash tool.
+1. ✅ Built `sandbox.py` — `Sandbox` class with `check()` and `run()`
+2. ✅ Docker mode: `--network none`, `--read-only`, `--user 1000:1000`, `--memory 256m`, `--pids-limit 50`
+3. ✅ Local fallback: scrubbed subprocess with restricted env
+4. ✅ Added `bash` tool to tools.py — runs through sandbox, requires approval
+5. ✅ Workspace fencing via Docker volume mount
 
 ## Files
 
 | File | Purpose |
 |------|---------|
-| `src/harness/sandbox.py` | Docker sandbox + local fallback |
-| `src/harness/tools.py` | Wire sandbox into bash tool |
+| `src/harness/sandbox.py` | Docker sandbox + local subprocess fallback |
+| `src/harness/tools.py` | bash tool wired through sandbox |
+| `tests/test_ch08.py` | 15 tests — sandbox, Docker isolation, workspace fencing |
 
 ## Demo
 
@@ -45,15 +46,30 @@ File written.
 
 ## Acceptance Criteria
 
-- [ ] Bash runs inside Docker sandbox when Docker is available
-- [ ] Docker sandbox: no network, non-root, read-only rootfs
-- [ ] Falls back to scrubbed local subprocess without Docker
-- [ ] Read-file cannot access paths outside workspace
-- [ ] Memory and process limits enforced
+- [x] Bash runs inside Docker sandbox when Docker is available
+- [x] Docker sandbox: no network, non-root, read-only rootfs
+- [x] Falls back to scrubbed local subprocess without Docker
+- [x] Read-file cannot access paths outside workspace (CH05)
+- [x] Memory and process limits enforced
 
 ## Learnings
 
-*(To be filled during implementation.)*
+### Key Design Decisions
+- **Docker first, local fallback.** `Sandbox.check()` probes Docker availability once and caches the result.
+- **`--read-only` rootfs** with writable `/tmp` (tmpfs) and `/workspace` (volume mount).
+- **Bash tool requires approval.** Same pattern as write_file — the approval gate prompts before execution.
+- **Workspace is mounted at `/workspace`** inside the container. All file operations use this mount point.
+
+### Real Model Demo
+```
+> bash tool execution through Docker sandbox
+> hello from sandbox
+> [sandbox: docker, 0.20s]
+```
+
+### Caveats
+- The local fallback doesn't provide real isolation — it's a best-effort scrub for systems without Docker.
+- Network isolation with `--network none` means commands like `curl` or `pip install` will fail. This is intentional.
 
 ## Reference Images
 

@@ -7,6 +7,20 @@ and this project adheres to **chapter tags** (CH00, CH01, CH02, ...).
 
 ---
 
+## [CH08] — 2026-07-14 — Sandbox
+
+### Added
+- `src/harness/sandbox.py`: `Sandbox` class — Docker execution (`--network none`, `--read-only`, `--user 1000:1000`, `--memory 256m`, `--pids-limit 50`) with local subprocess fallback
+- `tests/test_ch08.py`: 15 tests — sandbox execution, Docker isolation, workspace fencing, bash tool integration
+
+### Changed
+- `src/harness/tools.py`: Added `bash` tool — runs through sandbox, requires approval
+- `docs/phases/08-sandbox.md`: Status → ✅ Complete, learnings filled
+- `BUILD_PLAN.md`: CH08 marked complete
+- `ROADMAP.md`: CH08 marked complete
+
+---
+
 ## [CH07] — 2026-07-14 — Skills
 
 ### Added

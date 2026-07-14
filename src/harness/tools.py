@@ -15,6 +15,8 @@ import math
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
+from harness.sandbox import Sandbox
+
 
 # ---------------------------------------------------------------------------
 # Tool definition
@@ -349,6 +351,58 @@ _WRITE_FILE_TOOL = Tool(
 
 
 # ---------------------------------------------------------------------------
+# Bash tool (runs through sandbox)
+# ---------------------------------------------------------------------------
+
+
+def _bash(command: str, workspace: str) -> str:
+    """Run a shell command through the sandbox.
+
+    Parameters
+    ----------
+    command : str
+        The shell command to execute.
+    workspace : str
+        The workspace directory (injected by the harness).
+
+    Returns
+    -------
+    str
+        The command output (stdout + stderr).
+    """
+    sandbox = Sandbox(workspace=workspace)
+    result = sandbox.run(command)
+
+    output = result.stdout
+    if result.stderr:
+        output += f"\n[stderr]\n{result.stderr}"
+    if result.exit_code != 0:
+        output += f"\n[exit code: {result.exit_code}]"
+
+    output += f"\n[sandbox: {result.method}, {result.duration:.2f}s]"
+    return output.strip()
+
+
+_BASH_TOOL = Tool(
+    name="bash",
+    description="Run a shell command. The command runs inside an isolated sandbox (Docker if available, local subprocess otherwise).",
+    parameters={
+        "type": "object",
+        "properties": {
+            "command": {
+                "type": "string",
+                "description": "The shell command to execute (e.g. 'ls -la').",
+            },
+        },
+        "required": ["command"],
+    },
+    fn=_bash,
+    requires_approval=True,
+    needs_workspace=True,
+)
+
+
+# ---------------------------------------------------------------------------
 # Default registry
 # ---------------------------------------------------------------------------
 
@@ -358,10 +412,12 @@ def default_registry() -> ToolRegistry:
     Returns
     -------
     ToolRegistry
-        A registry pre-populated with calculator, read_file, and write_file.
+        A registry pre-populated with calculator, read_file, write_file,
+        and bash.
     """
     registry = ToolRegistry()
     registry.register(_CALCULATOR_TOOL)
     registry.register(_READ_FILE_TOOL)
     registry.register(_WRITE_FILE_TOOL)
+    registry.register(_BASH_TOOL)
     return registry

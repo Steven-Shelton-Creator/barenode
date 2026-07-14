@@ -9,6 +9,7 @@ src/barenode.egg-info/entry_points.txt
 src/barenode.egg-info/top_level.txt
 src/harness/__init__.py
 src/harness/agent.py
+src/harness/approval.py
 src/harness/compaction.py
 src/harness/context.py
 src/harness/events.py
@@ -29,4 +30,14 @@ src/ui/__init__.py
 src/ui/app.py
 src/ui/widgets.py
 tests/test_ch01.py
+tests/test_ch02.py
+tests/test_ch03.py
+tests/test_ch04.py
+tests/test_ch05.py
+tests/test_ch06.py
+tests/test_ch07.py
+tests/test_ch08.py
+tests/test_ch09.py
+tests/test_ch10.py
+tests/test_compare_CH05.py
 tests/test_smoke.py

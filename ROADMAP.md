@@ -40,7 +40,7 @@
 ## Tier 3 — Intelligence
 
 - [x] **CH09** — Durable State: JSONL session persistence, keyword search
-- [ ] **CH10** — Planning: orchestrator, step gates, /plan command
+- [x] **CH10** — Planning: orchestrator, step gates, /plan command
 - [ ] **CH11** — Subagents: delegate, fan-out, context isolation
 
 *End state: Agent survives restart, plans multi-step tasks, delegates subtasks.*

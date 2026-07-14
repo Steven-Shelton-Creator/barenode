@@ -1,6 +1,6 @@
 # Phase 5 — Tools
 
-**Status:** 📝 Not Started
+**Status:** ✅ Complete (2026-07-14)
 
 ---
 
@@ -16,14 +16,14 @@ Give the agent the ability to act — not just talk. Tools are functions the mod
 - **Approval gates:** Some tools (bash, file writes) require human approval before execution. No approval → fails safe.
 - **Tool loop:** Send with tool specs → model reaches for a tool → run it → hand back results → repeat. Capped at 6 iterations.
 
-## Plan
+## Plan (completed)
 
-1. Build `tools.py` with a `Tool` dataclass (name, description, parameters, function, requires_approval).
-2. Build a `ToolRegistry` that stores tools and provides specs to the model.
-3. Implement a calculator tool (safe, no approval needed).
-4. Implement read/write file tools (requires approval).
-5. Build the approval gate (`approval.py`).
-6. Wire the tool loop into the agent's `send()` method.
+1. ✅ Built `tools.py` with `Tool` dataclass + `ToolRegistry`
+2. ✅ Built `ToolRegistry` with register, get, specs, execute, requires_approval, needs_workspace
+3. ✅ Implemented calculator tool (safe eval, no builtins, math module access)
+4. ✅ Implemented read_file and write_file tools (workspace confinement, path security)
+5. ✅ Built approval gate (`approval.py`) — y/n prompt on stderr
+6. ✅ Wired tool loop into `agent.send()` — capped at 6 iterations
 
 ## Files
 
@@ -52,11 +52,11 @@ Blocked: path outside workspace.
 
 ## Acceptance Criteria
 
-- [ ] Calculator tool returns correct results without approval
-- [ ] Write file tool prompts for approval
-- [ ] Paths outside workspace are rejected
-- [ ] Tool loop caps at 6 iterations
-- [ ] Model can chain multiple tool calls
+- [x] Calculator tool returns correct results without approval
+- [x] Write file tool prompts for approval
+- [x] Paths outside workspace are rejected
+- [x] Tool loop caps at 6 iterations
+- [x] Model can chain multiple tool calls
 
 ## Learnings
 

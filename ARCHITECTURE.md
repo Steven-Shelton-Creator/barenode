@@ -97,20 +97,20 @@ All primitives live in one flat package — the harness is the agent. Each file 
 
 | #  | Primitive           | Package    | What it adds                                      |
 |----|---------------------|------------|---------------------------------------------------|
-| 0  | Model               | model      | Single chat call, stateless REPL                  |
-| 1  | History             | harness    | `self.messages` list, append user + reply each turn |
-| 2  | Instructions        | harness    | System prompt + `agents.md` auto-load             |
-| 3  | Context Delivery    | harness    | `@file` syntax → read file, inject content        |
-| 4  | Tools               | harness    | Function + schema registry, approval gates        |
-| 5  | Context Management  | harness    | Compress middle, keep head/tail, clamp sizes      |
-| 6  | Skills              | harness    | `skill.md` directories, progressive disclosure    |
-| 7  | Sandbox             | harness    | Docker isolation (or scrubbed local fallback)     |
-| 8  | Durable State       | harness    | JSONL session persistence, keyword search         |
-| 9  | Planning            | harness    | Orchestrator: model plans steps, harness drives   |
-| 10 | Subagents           | harness    | Fresh agent per subtask, context isolation        |
-| 11 | Self-Verification   | harness    | Run tests, don't accept "done" without green run  |
-| 12 | Observability       | harness    | OpenTelemetry spans, cost tracking, multi-sink    |
-| 13 | Terminal UI         | ui         | Two-pane TUI, trace stream, approval modals       |
+| 1  | Model               | model      | Single chat call, stateless REPL                  |
+| 2  | History             | harness    | `self.messages` list, append user + reply each turn |
+| 3  | Instructions        | harness    | System prompt + `agents.md` auto-load             |
+| 4  | Context Delivery    | harness    | `@file` syntax → read file, inject content        |
+| 5  | Tools               | harness    | Function + schema registry, approval gates        |
+| 6  | Context Management  | harness    | Compress middle, keep head/tail, clamp sizes      |
+| 7  | Skills              | harness    | `skill.md` directories, progressive disclosure    |
+| 8  | Sandbox             | harness    | Docker isolation (or scrubbed local fallback)     |
+| 9  | Durable State       | harness    | JSONL session persistence, keyword search         |
+| 10 | Planning            | harness    | Orchestrator: model plans steps, harness drives   |
+| 11 | Subagents           | harness    | Fresh agent per subtask, context isolation        |
+| 12 | Self-Verification   | harness    | Run tests, don't accept "done" without green run  |
+| 13 | Observability       | harness    | OpenTelemetry spans, cost tracking, multi-sink    |
+| 14 | Terminal UI         | ui         | Two-pane TUI, trace stream, approval modals       |
 
 ---
 

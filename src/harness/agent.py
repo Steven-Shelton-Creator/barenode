@@ -18,6 +18,8 @@ from harness.instructions import build_system_message
 from harness.context import deliver
 from harness.tools import default_registry, ToolRegistry
 from harness.approval import prompt_approval
+from harness.compaction import compact
+from harness.limits import MAX_CONTEXT_TOKENS
 
 # Maximum number of tool call iterations before the agent stops
 _MAX_TOOL_ITERATIONS = 6
@@ -51,6 +53,7 @@ class Agent:
         self.workspace = workspace or os.getcwd()
         self.messages: list[dict] = []
         self.tools = tools or default_registry()
+        self._context_budget = int(os.environ.get("BARENODE_CONTEXT_BUDGET", str(MAX_CONTEXT_TOKENS)))
 
     def send(self, message: str) -> str:
         """Append a user message and return the model's final text reply.
@@ -74,6 +77,9 @@ class Agent:
         # Resolve @file references and store user message
         resolved = deliver(message, self.workspace)
         self.messages.append({"role": "user", "content": resolved})
+
+        # Compact self.messages if budget exceeded (CH06)
+        self.messages = compact(self.messages, budget=self._context_budget)
 
         # Build tool specs to advertise to the model
         tool_specs = self.tools.specs()

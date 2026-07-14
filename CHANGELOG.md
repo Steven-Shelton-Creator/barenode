@@ -7,6 +7,21 @@ and this project adheres to **chapter tags** (CH00, CH01, CH02, ...).
 
 ---
 
+## [CH06] — 2026-07-14 — Context Management
+
+### Added
+- `src/harness/limits.py`: Token budget constants (MAX_CONTEXT_TOKENS, MAX_ITEM_CHARS, HEAD_TURNS, TAIL_TURNS), token estimator (`estimate_tokens`, `estimate_messages_tokens`, `is_budget_exceeded`)
+- `src/harness/compaction.py`: `compact()` — keeps head/tail, summarizes middle; `clamp_content()` — truncates over-long items
+- `tests/test_ch06.py`: 29 tests — limits, clamp, compact, agent integration, regression
+
+### Changed
+- `src/harness/agent.py`: Wired `compact()` into `send()` — fires after user message appended, before tool loop. Supports `BARENODE_CONTEXT_BUDGET` env var.
+- `docs/phases/06-compaction.md`: Status → ✅ Complete, learnings filled
+- `BUILD_PLAN.md`: CH06 marked complete
+- `ROADMAP.md`: CH06 marked complete
+
+---
+
 ## [CH05] — 2026-07-14 — Tools
 
 ### Added

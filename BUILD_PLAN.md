@@ -39,8 +39,8 @@ Each milestone maps to one chapter / git tag. Every chapter builds one primitive
 |      |        | ✅ approval gates                       | `src/harness/approval.py`,        |
 |      |        | ✅ tool loop in agent                   | `src/harness/agent.py`,           |
 |      |        | ✅ ModelResponse structured return      | `src/model/provider.py`          |
-| 6    | `CH06` | Context management (compress + clamp)  | `src/harness/compaction.py`,     |
-|      |        |                                        | `src/harness/limits.py`          |
+| 6    | `CH06` | ✅ Context management (compress + clamp) | `src/harness/compaction.py`,     |
+|      |        | ✅ token budget, token estimator        | `src/harness/limits.py`          |
 
 **Demo:** Ask calculator tool — exact answer. Write file — approval gate pauses. Flood context — compaction fires, head/tail survive.
 

@@ -119,11 +119,12 @@ All primitives live in one flat package — the harness is the agent. Each file 
 ```
 Tier 1 — Core Agent        Tier 2 — Action Layer     Tier 3 — Intelligence
 ┌──────────────────┐      ┌──────────────────┐      ┌──────────────────┐
-│  Model           │      │  Tools           │      │  Memory          │
-│  History         │      │  Sandbox         │      │  Planning        │
-│  Instructions    │      │  Skills          │      │  Subagents       │
-│  Context         │      └──────────────────┘      └──────────────────┘
-└──────────────────┘
+│  Model           │      │  Tools           │      │  Skills          │
+│  History         │      │  Context Mgmt    │      │  Sandbox         │
+│  Instructions    │      └──────────────────┘      │  Memory          │
+│  Context         │                                 │  Planning        │
+└──────────────────┘                                 │  Subagents       │
+                                                     └──────────────────┘
                          Tier 4 — Reliability       Tier 5 — Interface
                          ┌──────────────────┐      ┌──────────────────┐
                          │  Verification    │      │  Terminal UI     │

@@ -3,12 +3,15 @@
 The harness prepends a system message on every turn that contains:
   1. A built-in system prompt describing the agent's role.
   2. Content auto-loaded from ``AGENTS.md`` in the workspace directory.
+  3. Available skill descriptions loaded from ``skills/`` (CH07).
 
 The system message is rebuilt fresh on every call — never stored in
 ``self.messages``.
 """
 
 import os
+
+from harness.skills import build_skills_section
 
 
 def load_instructions(workspace: str | None = None) -> str:
@@ -40,13 +43,15 @@ def load_instructions(workspace: str | None = None) -> str:
         return ""
 
 
-def make_system_prompt(agents_content: str) -> str:
+def make_system_prompt(agents_content: str, skills_dir: str | None = None) -> str:
     """Build the full system prompt string.
 
     Parameters
     ----------
     agents_content : str
         Content loaded from ``AGENTS.md`` (may be empty).
+    skills_dir : str or None
+        Path to the skills directory for skill descriptions (CH07).
 
     Returns
     -------
@@ -55,9 +60,17 @@ def make_system_prompt(agents_content: str) -> str:
     """
     built_in = "You are barenode, a helpful coding assistant built from scratch."
 
+    parts = [built_in]
+
     if agents_content:
-        return f"{built_in}\n\n---\n\n{agents_content}"
-    return built_in
+        parts.append("---")
+        parts.append(agents_content)
+
+    skills_section = build_skills_section(skills_dir)
+    if skills_section:
+        parts.append(skills_section)
+
+    return "\n\n".join(parts)
 
 
 def build_system_message(workspace: str | None = None) -> dict | None:
@@ -78,7 +91,8 @@ def build_system_message(workspace: str | None = None) -> dict | None:
         ``None`` if there's no content.
     """
     agents_content = load_instructions(workspace)
-    prompt = make_system_prompt(agents_content)
+    skills_dir = os.path.join(workspace, "skills") if workspace else None
+    prompt = make_system_prompt(agents_content, skills_dir=skills_dir)
     if not prompt:
         return None
     return {"role": "system", "content": prompt}

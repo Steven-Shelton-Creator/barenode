@@ -330,3 +330,48 @@ def test_ch05_regression(tmp_path) -> None:
         agents_md = tmp_path / "AGENTS.md"
         agents_md.write_text("You are a test agent.")
         assert name in agent.tools.names()
+
+
+# =========================================================================
+# Manual compaction demo log (real model, budget=200)
+# =========================================================================
+#
+# The following is a real-world verification run captured from the REPL
+# with BARENODE_CONTEXT_BUDGET=200.  It demonstrates compaction firing,
+# head/tail preservation, and tool use after compression.
+#
+# -----------------------------------------------------------------------
+# $ BARENODE_CONTEXT_BUDGET=200 uv run python3 -c "..."
+#
+# Turn 1: sent (2 msgs in history)
+# Turn 2: sent (4 msgs in history)
+# Turn 3: sent (6 msgs in history)
+# Turn 4: sent (8 msgs in history)
+# Turn 5: sent (10 msgs in history)
+# Turn 6: sent (6 msgs in history)  ← compaction fired!
+#
+# === After 6 verbose turns ===
+# Total messages: 6
+#   [0] user: This is turn number 0. ...          ← HEAD preserved
+#   [1] assistant: ...                            ← HEAD preserved
+#   [2] system >>> [... compressed: 2 turns ...]  ← MIDDLE compressed
+#   [3] system >>> [... compressed: 1 turns ...]  ← RECURSIVE pass
+#   [4] user: This is turn number 5. ...          ← TAIL preserved
+#   [5] assistant: ...                            ← TAIL preserved
+#
+# --- Test: Does the agent remember the last turn? ---
+# > What was the number of my last turn?
+# > Based on our recent interaction, the last turn number was 5.
+#   ✅ Tail survived — agent remembers turn 5.
+#
+# --- Test: Calculator still works after compaction ---
+# > Calculate 2 + 2 using the calculator tool.
+# > The result of 2 + 2 is 4.
+#   ✅ Tool loop works after compaction.
+#
+# Key observations:
+# - Compaction fired on turn 6 when budget was exceeded
+# - Two compression passes occurred (recursive reduction)
+# - Head (turn 0) and tail (turn 5) survived both passes
+# - Agent answered accurately from the tail context
+# - Calculator tool still functioned normally after compaction

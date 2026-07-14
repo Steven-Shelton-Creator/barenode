@@ -7,6 +7,23 @@ and this project adheres to **chapter tags** (CH00, CH01, CH02, ...).
 
 ---
 
+## [CH07] — 2026-07-14 — Skills
+
+### Added
+- `src/harness/skills.py`: Skill class, frontmatter parser, load_skills(), build_skills_section()
+- `tests/test_ch07.py`: 26 tests — frontmatter, Skill, loader, system prompt, agent integration, regression
+
+### Changed
+- `src/harness/instructions.py`: `make_system_prompt()` now accepts `skills_dir` param — appends skill descriptions to system prompt
+- `docs/phases/07-skills.md`: Status → ✅ Complete, learnings filled
+- `BUILD_PLAN.md`: CH07 marked complete
+- `ROADMAP.md`: CH07 marked complete
+
+### Skills pre-loaded
+- `skills/sign-off/skill.md` — Signs off each response with the project code word "hila"
+
+---
+
 ## [CH06] — 2026-07-14 — Context Management
 
 ### Added

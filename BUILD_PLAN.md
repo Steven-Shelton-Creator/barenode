@@ -50,7 +50,8 @@ Each milestone maps to one chapter / git tag. Every chapter builds one primitive
 
 | Step | Tag    | What We Build                          | Files Touched                    |
 |------|--------|----------------------------------------|----------------------------------|
-| 7    | `CH07` | Skills — `skill.md` directories        | `src/harness/skills.py`          |
+| 7    | `CH07` | ✅ Skills — `skill.md` directories        | `src/harness/skills.py`,          |
+|      |        | ✅ frontmatter parser, prompt injection    | `src/harness/instructions.py`    |
 | 8    | `CH08` | Sandbox hardening (Docker isolation)   | `src/harness/sandbox.py`         |
 | 9    | `CH09` | Durable state — JSONL session files    | `src/harness/memory.py`          |
 

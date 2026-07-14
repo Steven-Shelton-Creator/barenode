@@ -1,6 +1,6 @@
 # Phase 7 — Skills
 
-**Status:** 📝 Not Started
+**Status:** ✅ Complete (2026-07-14)
 
 ---
 
@@ -14,20 +14,21 @@ Give the agent operational memory — procedures it can follow without being tol
 - **Progressive disclosure:** Only the one-line description is advertised in the system prompt. The full body stays on disk until the model decides it's relevant and reads it with the read-file tool (which it already has from Phase 5).
 - **Skills array:** Added to the system prompt alongside the built-in prompt and AGENTS.md.
 
-## Plan
+## Plan (completed)
 
-1. Build `skills.py` — load skill descriptions from `skills/` directory.
-2. Parse frontmatter from `skill.md` files (name, description).
-3. Inject skill descriptions (name + description only) into the system prompt.
-4. Model reads the full skill body on demand using the existing read-file tool.
+1. ✅ Built `skills.py` — frontmatter parser, Skill class, load_skills(), build_skills_section()
+2. ✅ Updated `instructions.py` — skills section appended to system prompt
+3. ✅ Skills directory with sign-off skill pre-loaded
+4. ✅ Progressive disclosure: only name + description in prompt, full body on disk
 
 ## Files
 
 | File | Purpose |
 |------|---------|
-| `src/harness/skills.py` | Skill loader, frontmatter parser |
-| `src/harness/instructions.py` | Add skills to system prompt assembly |
-| `skills/` | Directory of skill directories |
+| `src/harness/skills.py` | Skill loader, frontmatter parser, system prompt builder |
+| `src/harness/instructions.py` | Skills section injected into system prompt |
+| `skills/sign-off/skill.md` | Example skill — signs off with code word |
+| `tests/test_ch07.py` | 26 tests — frontmatter, Skill, loader, integration, regression |
 
 ## Demo
 
@@ -42,14 +43,26 @@ The codename "hila" lives nowhere in the prompt — it's only in the skill file 
 
 ## Acceptance Criteria
 
-- [ ] Skill descriptions appear in system prompt (name + one-liner only)
-- [ ] Model reads full skill body only when relevant
-- [ ] Multiple skills work alongside each other
-- [ ] Missing skills directory does not crash
+- [x] Skill descriptions appear in system prompt (name + one-liner only)
+- [x] Model reads full skill body only when relevant
+- [x] Multiple skills work alongside each other
+- [x] Missing skills directory does not crash
 
 ## Learnings
 
-*(To be filled during implementation.)*
+### Key Design Decisions
+- **Progressive disclosure.** Only skill name + description go in the system prompt. The model uses `read_file` (from CH05) to load full instructions when needed.
+- **Frontmatter parsing.** Simple `---` delimiter parsing. No YAML dependency needed for name/description key-value pairs.
+- **Fallback to directory name.** If `skill.md` has no frontmatter name, the directory name is used.
+
+### Real Model Demo
+```
+> Please sign off for me.
+> The task is complete.
+>
+> hila
+```
+The code word "hila" lived only in `skills/sign-off/skill.md` on disk — never in the prompt.
 
 ## Reference Images
 

@@ -17,7 +17,7 @@ When you load up fresh, read these in order:
 2. **`CHANGELOG.md`** — full commit history organized by tag/release
 3. **`docs/workflow-reflections.md`** — master index of daily process reflections
 4. **`docs/reflections/YYYY-MM-DD.md`** — most recent daily reflection (what we did last session)
-5. **`docs/2026-07-13-session.md`** — most recent session log (detailed checklist)
+5. **`docs/2026-07-14-session.md`** — most recent session log (detailed checklist)
 6. **`BUILD_PLAN.md`** — what's next on the chapter roadmap
 
 ---
@@ -50,7 +50,7 @@ Master index: `docs/workflow-reflections.md`
 │   │   ├── agent.py         #     Agent class — CH02 history, CH03 instructions, CH04 @file
 │   │   ├── instructions.py  #     ✅ CH03 — system prompt + AGENTS.md loader
 │   │   ├── context.py       #     ✅ CH04 — @file context delivery
-│   │   ├── tools.py         #     CH05 stub
+│   │   ├── tools.py         #     ✅ CH05 — Tool registry, 6 tools
 │   │   ├── compaction.py    #     CH06 stub
 │   │   ├── limits.py        #     CH06 stub
 │   │   ├── skills.py        #     CH07 stub
@@ -85,21 +85,29 @@ Master index: `docs/workflow-reflections.md`
 │   │   ├── 02-history.md    #     ✅ Complete
 │   │   ├── 03-instructions.md   # ✅ Complete
 │   │   ├── 04-context.md    #     ✅ Complete
-│   │   ├── 05-tools.md      #     ❌ Stub
-│   │   ├── 06-compaction.md #     ❌ Stub
-│   │   ├── 07-skills.md     #     ❌ Stub
-│   │   ├── 08-sandbox.md    #     ❌ Stub
-│   │   ├── 09-memory.md     #     ❌ Stub
-│   │   ├── 10-planner.md    #     ❌ Stub
-│   │   ├── 11-subagents.md  #     ❌ Stub
-│   │   ├── 12-verification.md   # ❌ Stub
+│   │   ├── 05-tools.md      #     ✅ Complete
+│   │   ├── 06-compaction.md #     ✅ Complete
+│   │   ├── 07-skills.md     #     ✅ Complete
+│   │   ├── 08-sandbox.md    #     ✅ Complete
+│   │   ├── 09-memory.md     #     ✅ Complete
+│   │   ├── 10-planner.md    #     ✅ Complete
+│   │   ├── 11-subagents.md  #     ✅ Complete
+│   │   ├── 12-verification.md   # ✅ Complete
 │   │   ├── 13-observability.md  # ❌ Stub
 │   │   └── 14-ui.md         #     ❌ Stub
 │   ├── verification/        #   Test run logs per chapter
 │   │   ├── CH01-verification.md  # ✅ Complete
 │   │   ├── CH02-verification.md  # ✅ Complete
 │   │   ├── CH03-verification.md  # ✅ Complete
-│   │   └── CH04-verification.md  # ✅ Complete
+│   │   ├── CH04-verification.md  # ✅ Complete
+│   │   ├── CH05-verification.md  # (pending)
+│   │   ├── CH06-verification.md  # (pending)
+│   │   ├── CH07-verification.md  # (pending)
+│   │   ├── CH08-verification.md  # (pending)
+│   │   ├── CH09-verification.md  # (pending)
+│   │   ├── CH10-verification.md  # (pending)
+│   │   ├── CH11-verification.md  # (pending)
+│   │   └── CH12-verification.md  # ✅ Complete
 │   ├── research/images/     #   24 reference screenshots (ch01-ch14)
 │   │   ├── ch01/            #     2 images
 │   │   ├── ch02/            #     1 image
@@ -126,6 +134,7 @@ Master index: `docs/workflow-reflections.md`
 │   ├── 2026-07-11-session.md    #   [TRACKING SYSTEM 2] Session log — Day 1
 │   ├── 2026-07-12-session.md    #   [TRACKING SYSTEM 2] Session log — Day 2
 │   └── 2026-07-13-session.md    #   [TRACKING SYSTEM 2] Session log — Day 3
+│   └── 2026-07-14-session.md    #   [TRACKING SYSTEM 2] Session log — Day 4
 │
 ├── skills/                  # Skill directories (progressive disclosure)
 │   └── sign-off/
@@ -163,14 +172,14 @@ Master index: `docs/workflow-reflections.md`
 | CH02 — History | `docs/phases/02-history.md` | ✅ Complete |
 | CH03 — Instructions | `docs/phases/03-instructions.md` | ✅ Complete |
 | CH04 — Context Delivery | `docs/phases/04-context.md` | ✅ Complete |
-| CH05 — Tools | `docs/phases/05-tools.md` | ❌ Stub |
-| CH06 — Context Management | `docs/phases/06-compaction.md` | ❌ Stub |
-| CH07 — Skills | `docs/phases/07-skills.md` | ❌ Stub |
-| CH08 — Sandbox | `docs/phases/08-sandbox.md` | ❌ Stub |
-| CH09 — Durable State | `docs/phases/09-memory.md` | ❌ Stub |
-| CH10 — Planning | `docs/phases/10-planner.md` | ❌ Stub |
-| CH11 — Subagents | `docs/phases/11-subagents.md` | ❌ Stub |
-| CH12 — Self-Verification | `docs/phases/12-verification.md` | ❌ Stub |
+| CH05 — Tools | `docs/phases/05-tools.md` | ✅ Complete |
+| CH06 — Context Management | `docs/phases/06-compaction.md` | ✅ Complete |
+| CH07 — Skills | `docs/phases/07-skills.md` | ✅ Complete |
+| CH08 — Sandbox | `docs/phases/08-sandbox.md` | ✅ Complete |
+| CH09 — Durable State | `docs/phases/09-memory.md` | ✅ Complete |
+| CH10 — Planning | `docs/phases/10-planner.md` | ✅ Complete |
+| CH11 — Subagents | `docs/phases/11-subagents.md` | ✅ Complete |
+| CH12 — Self-Verification | `docs/phases/12-verification.md` | ✅ Complete |
 | CH13 — Observability | `docs/phases/13-observability.md` | ❌ Stub |
 | CH14 — Terminal UI | `docs/phases/14-ui.md` | ❌ Stub |
 
@@ -215,10 +224,10 @@ Master index: `docs/workflow-reflections.md`
 | Tier | Chapters | Status |
 |------|----------|--------|
 | 1 — Core Agent | CH01–04 | ✅ **100% complete** |
-| 2 — Action Layer | CH05–08 | ❌ Not started (stubs only) |
-| 3 — Intelligence | CH09–11 | ❌ Not started (stubs only) |
-| 4 — Reliability | CH12–13 | ❌ Not started (stubs only) |
-| 5 — Interface | CH14 | ❌ Not started (stubs only) |
+| 2 — Action Layer | CH05–08 | ✅ **100% complete** |
+| 3 — Intelligence | CH09–11 | ✅ **100% complete** |
+| 4 — Reliability | CH12–13 | 🟡 **50% complete** (CH12 done, CH13 pending) |
+| 5 — Interface | CH14 | ❌ Not started |
 
 ---
 
@@ -232,6 +241,9 @@ Master index: `docs/workflow-reflections.md`
 | ADR-004 | CH02 Provider Signature Change | Closed |
 | ADR-005 | Intake Valve — Memory-Only Credential Security | Closed |
 | ADR-006 | CH04 Context Delivery — @file Design | Closed |
+| ADR-007 | CH11 Subagent Session Persistence | Open (deferred) |
+| ADR-008 | Pi vs Barenode — Session Forking vs Subagent Delegation | Informational |
+| ADR-009 | CH11 Subagent Harness Weight — Full Clone vs Lightweight | Open (deferred) |
 
 ---
 
@@ -239,16 +251,16 @@ Master index: `docs/workflow-reflections.md`
 
 | Commit | Description |
 |--------|-------------|
-| `9a8bad7` | **CH04: implement context delivery — @file reference injection** |
-| `3a8f940` | docs: add Recent Commits table to schema map, update AGENTS.md tracking instruction |
-| `a527a49` | docs: add end-of-day summary to session log |
-| `60d8e28` | docs: add CH03 verification log with real model results |
-| `b168dc2` | **CH03: implement instructions — system prompt loader, AGENTS.md auto-load, workspace** |
-| `aee9a51` | docs: ADR-005 — intake valve credential security model |
-| `fb27384` | security: intake valve uses memory-only credential helper |
-| `d31cfa7` | docs: add CHANGELOG.md with full commit history organized by tag |
-| `9bdf45e` | feat: add intake valve — credential/configuration bootstrap for agent |
-| `eeed4c5` | chore: add self-orientation and tracking update instructions to AGENTS.md |
+| `c49d1b0` | **CH12: implement Self-Verification — code-change gate, test runner, exit-code check** |
+| `2c61c10` | fix: move CH11 comparison doc to tests/compare_CH11.py, remove docs/tests |
+| `8f26494` | docs: add ADR-009 — subagent harness weight, full clone vs lightweight |
+| `048a26e` | docs: add ADR-008 — Pi vs barenode subagent architecture comparison |
+| `3aaeaa3` | docs: add ADR-007 — subagent session persistence decision (deferred) |
+| `252cc9a` | **CH11: implement Subagents — delegate, fan-out, context isolation** |
+| `de1b1b4` | **CH10: implement Planning — orchestrator, JSON plan generation, step execution** |
+| `6fe1a1b` | docs: add CH11 implementation vs blueprint comparison to docs/tests |
+| `8f26494` | docs: add ADR-009 — subagent harness weight, full clone vs lightweight |
+| `048a26e` | docs: add ADR-008 — Pi vs barenode subagent architecture comparison |
 
 > Full history: `CHANGELOG.md` (organized by tag) or `git log --oneline`
 
@@ -258,10 +270,10 @@ Master index: `docs/workflow-reflections.md`
 
 | What you need | Go to |
 |---------------|-------|
-| What did we do last session? | `docs/reflections/2026-07-13.md` (most recent) |
+| What did we do last session? | `docs/reflections/2026-07-14.md` (most recent) |
 | What's the next chapter to build? | `BUILD_PLAN.md` |
 | What decisions did we make? | `DECISIONS.md` |
-| What are the test results? | `docs/verification/CH04-verification.md` |
+| What are the test results? | `docs/verification/CH12-verification.md` |
 | What does the architecture look like? | `ARCHITECTURE.md` |
 | What does the agent system prompt say? | `AGENTS.md` |
 | What's the full commit history? | `CHANGELOG.md` |

@@ -67,7 +67,8 @@ Each milestone maps to one chapter / git tag. Every chapter builds one primitive
 |------|--------|----------------------------------------|----------------------------------|
 | 10   | `CH10` | ✅ Planning — orchestrator, step gates    | `src/harness/orchestrator.py`,    |
 |      |        | ✅ plan gen, step exec, retry              | `src/main.py`                    |
-| 11   | `CH11` | Subagents — delegate + fan_out tools   | `src/harness/subagent.py`        |
+| 11   | `CH11` | ✅ Subagents — delegate + fan_out tools   | `src/harness/subagent.py`,        |
+|      |        |                                       | `src/harness/tools.py`             |
 
 **Demo:** `/plan` with multi-step calculation — steps executed in order. Fan out two parallel subtasks — answers come back, contexts isolated.
 

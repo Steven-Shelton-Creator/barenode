@@ -1,6 +1,7 @@
 # Phase 11 — Subagents
 
-**Status:** 📝 Not Started
+**Status:** ✅ Complete
+**Date:** 2026-07-14
 
 ---
 
@@ -46,15 +47,29 @@ Neither subagent saw the other's reasoning — each ran in isolation.
 
 ## Acceptance Criteria
 
-- [ ] `delegate` runs a subtask in a fresh agent
-- [ ] `fan_out` runs multiple subtasks in parallel
-- [ ] Subtask contexts are fully isolated
-- [ ] Results are returned in order
-- [ ] Subagent errors don't crash the parent
+- [x] `delegate` runs a subtask in a fresh agent
+- [x] `fan_out` runs multiple subtasks in parallel
+- [x] Subtask contexts are fully isolated
+- [x] Results are returned in order
+- [x] Subagent errors don't crash the parent
 
 ## Learnings
 
-*(To be filled during implementation.)*
+### Circular Import Trap
+
+The dependency chain `tools.py → subagent.py → agent.py → tools.py` creates a circular import. Fixed with lazy imports (wrapper functions that do a local import inside the function body) rather than top-level imports.
+
+### Threading vs Async
+
+Used `concurrent.futures.ThreadPoolExecutor` for fan-out parallelism. Simpler than asyncio for CPU-bound Python work, no event loop management needed.
+
+### Session Isolation
+
+Each subagent gets a unique session name via a thread-safe counter (`threading.Lock()`). This prevents session file collisions when multiple subagents run in parallel.
+
+### Error Isolation
+
+Each subagent runs in a try/except block. If one subtask fails, its error message is returned as the result — other subtasks proceed unaffected.
 
 ## Reference Images
 

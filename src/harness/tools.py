@@ -406,6 +406,75 @@ _BASH_TOOL = Tool(
 # Default registry
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Delegate tool (CH11 — single subtask)
+# ---------------------------------------------------------------------------
+
+
+def _run_delegate(task: str) -> str:
+    """Lazy-import wrapper for delegate to avoid circular imports."""
+    from harness.subagent import delegate as _delegate
+    return _delegate(task)
+
+
+_DELEGATE_TOOL = Tool(
+    name="delegate",
+    description="Delegate a single subtask to a fresh agent with its own clean context. "
+                "Use this when a task is self-contained and would pollute the main context. "
+                "The subagent will run independently and return its answer.",
+    parameters={
+        "type": "object",
+        "properties": {
+            "task": {
+                "type": "string",
+                "description": "The task description to delegate to the subagent.",
+            },
+        },
+        "required": ["task"],
+    },
+    fn=_run_delegate,
+    requires_approval=True,
+    needs_workspace=False,
+)
+
+
+# ---------------------------------------------------------------------------
+# Fan-out tool (CH11 — parallel subtasks)
+# ---------------------------------------------------------------------------
+
+
+def _run_fan_out(tasks: list[str]) -> str:
+    """Lazy-import wrapper for fan_out to avoid circular imports."""
+    from harness.subagent import fan_out as _fan_out
+    return _fan_out(tasks)
+
+
+_FAN_OUT_TOOL = Tool(
+    name="fan_out",
+    description="Delegate multiple subtasks to fresh agents running in parallel. "
+                "Each subtask gets its own isolated context. "
+                "Provide a list of task descriptions, and results are returned in order.",
+    parameters={
+        "type": "object",
+        "properties": {
+            "tasks": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "A list of task descriptions, one per subagent.",
+            },
+        },
+        "required": ["tasks"],
+    },
+    fn=_run_fan_out,
+    requires_approval=True,
+    needs_workspace=False,
+)
+
+
+# ---------------------------------------------------------------------------
+# Default registry
+# ---------------------------------------------------------------------------
+
 def default_registry() -> ToolRegistry:
     """Create a ToolRegistry with all built-in tools.
 
@@ -413,11 +482,13 @@ def default_registry() -> ToolRegistry:
     -------
     ToolRegistry
         A registry pre-populated with calculator, read_file, write_file,
-        and bash.
+        bash, delegate, and fan_out.
     """
     registry = ToolRegistry()
     registry.register(_CALCULATOR_TOOL)
     registry.register(_READ_FILE_TOOL)
     registry.register(_WRITE_FILE_TOOL)
     registry.register(_BASH_TOOL)
+    registry.register(_DELEGATE_TOOL)
+    registry.register(_FAN_OUT_TOOL)
     return registry

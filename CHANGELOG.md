@@ -7,6 +7,20 @@ and this project adheres to **chapter tags** (CH00, CH01, CH02, ...).
 
 ---
 
+## [CH11] — 2026-07-14 — Subagents
+
+### Added
+- `src/harness/subagent.py`: `run_subagent()` — fresh Agent per subtask, `delegate()` single task, `fan_out()` parallel tasks via ThreadPoolExecutor
+- `tests/test_ch11.py`: 16 tests — run_subagent, delegate, fan_out, context isolation, parallelism, error handling, registry integration, regression
+
+### Changed
+- `src/harness/tools.py`: Registered `delegate` and `fan_out` tools (lazy import wrappers to break circular dependency)
+- `docs/phases/11-subagents.md`: Status → ✅ Complete, learnings filled
+- `BUILD_PLAN.md`: CH11 marked complete
+- `ROADMAP.md`: CH11 marked complete
+
+---
+
 ## [CH09] — 2026-07-14 — Durable State / Memory
 
 ### Added

@@ -42,11 +42,11 @@ uv run verify         # test suite
 | Tier | Phases | Status |
 |------|--------|--------|
 | Foundation | Repo scaffold, docs, decisions | ✅ Done |
-| Core Agent | Model, History, Instructions, Context | 📝 Not started |
-| Action Layer | Tools, Sandbox, Skills | 📝 Not started |
-| Intelligence | Memory, Planning, Subagents | 📝 Not started |
-| Reliability | Verification, Observability | 📝 Not started |
-| Interface | Terminal UI | 📝 Not started |
+| Core Agent | Model, History, Instructions, Context | ✅ Done |
+| Action Layer | Tools, Sandbox, Skills | ✅ Done |
+| Intelligence | Memory, Planning, Subagents | ✅ Done |
+| Reliability | Verification, Observability | ✅ Done |
+| Interface | Terminal UI | ✅ Done |
 
 ---
 

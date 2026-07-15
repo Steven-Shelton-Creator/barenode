@@ -301,3 +301,51 @@ We needed to decide:
 - No token management yet — large files are injected whole (CH06 adds compression)
 - The REPL and demo needed zero structural changes — the injection is transparent to the UI layer
 - The security boundary is enforced at the string level (startswith), not the filesystem level (realpath) — sufficient for an educational build
+
+---
+
+## ADR-007: CH11 — Subagent Session Persistence
+
+**Status:** Open (deferred)
+
+**Date:** 2026-07-14
+
+### Context
+
+Chapter 11 adds subagents — fresh `Agent` instances for delegated and fanned-out subtasks. Each subagent is a full `Agent` instance, which means it inherits the CH09 durable state machinery:
+
+- `Agent.__init__` calls `load_session(name, session_dir)`
+- `Agent.send()` calls `save_session()` after every reply
+- `session_dir` defaults to `logs/` in the current working directory
+
+Since `run_subagent()` assigns each subagent a unique `session_name` (e.g., `subagent_1`, `subagent_2`), every `delegate` or `fan_out` call creates one or more persistent JSONL session files on disk — even though the subagent's full transcript is discarded after returning just the final answer.
+
+### Options Considered
+
+| Option | Behavior | Complexity |
+|--------|----------|-------------|
+| **A — Status quo** | Subagents write session files to `logs/subagent_N.jsonl` | Zero |
+| **B — Null session dir** | Pass `session_dir="/dev/null"` or a temp dir — files are transient | Low |
+| **C — Persistence flag** | Add `persist: bool = True` param to Agent, subagents pass `persist=False` | Medium |
+| **D — Discard after read** | Run subagent, read reply, delete session file immediately | Low |
+
+### Decision
+
+**Deferred — keep Option A (status quo) for now.**
+
+### Rationale
+
+- The project is small and educational — a handful of tiny JSONL files in `logs/` is negligible
+- Every subagent file is a few lines (1 user message + 1 assistant reply), so disk impact is minimal
+- The session files are human-readable and could be useful for debugging subagent behavior
+- Adding a persistence guard introduces complexity that doesn't serve the current build goals
+- This decision can be revisited when/if:
+  - The system runs at scale (hundreds of subagents per session)
+  - `logs/` clutter becomes a user complaint
+  - A `--clean` flag or session lifecycle management is added
+
+### Consequences
+
+- Every `delegate` or `fan_out` call leaves a trace in `logs/` — good for debugging, bad for minimalists
+- Subagent session files are tiny and self-cleaning if `logs/` is added to a cleanup cron or gitignored for large-scale use
+- No code changes needed now; if Option B/C/D is chosen later, it's a 2-line change in `run_subagent()` and `_run_one()`

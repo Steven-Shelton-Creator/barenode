@@ -360,3 +360,38 @@ class MultiSink(Sink):
     def write(self, trace: list[Span]) -> None:
         for sink in self.sinks:
             sink.write(trace)
+
+
+class StoreSink(Sink):
+    """Stores the last trace in memory for the TUI to read.
+
+    The TUI reads the trace after each turn via ``get_trace()``,
+    but the agent clears its tracer inside ``_flush_trace()``.
+    This sink captures the trace data before it is lost.
+    """
+
+    def __init__(self) -> None:
+        self._last_trace: list[dict] = []
+
+    def write(self, trace: list[Span]) -> None:
+        spans = []
+        for span in trace:
+            spans.append({
+                "name": span.name,
+                "kind": span.kind.value if hasattr(span.kind, "value") else str(span.kind),
+                "duration": span.duration,
+                "attributes": dict(span.attributes),
+                "events": [
+                    {"name": e.name, "attributes": dict(e.attributes)}
+                    for e in span.events
+                ],
+            })
+        self._last_trace = spans
+
+    def get_trace(self) -> list[dict]:
+        """Return the most recent trace as serialized dicts."""
+        return list(self._last_trace)
+
+    def clear(self) -> None:
+        """Clear the stored trace."""
+        self._last_trace = []

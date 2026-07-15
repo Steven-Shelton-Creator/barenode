@@ -26,7 +26,7 @@ from rich.text import Text
 from rich.panel import Panel
 
 from harness.agent import Agent
-from harness.tracer import Tracer, ConsoleSink, GenAISpanKind
+from harness.tracer import Tracer, ConsoleSink, StoreSink, MultiSink, GenAISpanKind
 from harness.approval import prompt_approval
 from model.provider import fake_set_next_tool_calls
 
@@ -56,6 +56,12 @@ class AgentRunner:
         self._approval_event = threading.Event()
         self._approval_result = False
 
+        # Replace the agent's single sink with a MultiSink that
+        # keeps the ConsoleSink (stdout) and adds a StoreSink so
+        # the TUI can read the trace after the agent clears it.
+        self._store_sink = StoreSink()
+        self.agent.sink = MultiSink([ConsoleSink(), self._store_sink])
+
     def send(self, message: str) -> str:
         """Send a message to the agent and return the reply.
 
@@ -76,21 +82,13 @@ class AgentRunner:
         return list(self.agent.messages)
 
     def get_trace_spans(self) -> list[dict]:
-        """Serialize the current trace for the UI."""
-        trace = self.agent.tracer.get_trace()
-        spans = []
-        for span in trace:
-            spans.append({
-                "name": span.name,
-                "kind": span.kind.value if hasattr(span.kind, "value") else str(span.kind),
-                "duration": span.duration,
-                "attributes": dict(span.attributes),
-                "events": [
-                    {"name": e.name, "attributes": dict(e.attributes)}
-                    for e in span.events
-                ],
-            })
-        return spans
+        """Return the most recent trace from the store sink.
+
+        The agent clears its tracer inside ``_flush_trace()``,
+        so we read from the StoreSink which captured the data
+        before it was lost.
+        """
+        return self._store_sink.get_trace()
 
 
 # ---------------------------------------------------------------------------
@@ -235,6 +233,7 @@ class BarenodeApp(App):
         self.conversation.clear()
         self.trace_pane.clear()
         self.runner.agent.tracer.clear()
+        self.runner._store_sink.clear()
 
 
 # ---------------------------------------------------------------------------

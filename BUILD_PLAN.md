@@ -94,7 +94,7 @@ Each milestone maps to one chapter / git tag. Every chapter builds one primitive
 
 | Step | Tag    | What We Build                          | Files Touched                    |
 |------|--------|----------------------------------------|----------------------------------|
-| 14   | `CH14` | Terminal UI — two-pane TUI             | `src/ui/app.py`,                 |
+| 14   | `CH14` | ✅ Terminal UI — two-pane TUI             | `src/ui/app.py`,                 |
 |      |        |                                        | `src/ui/widgets.py`              |
 
 **Demo:** `uv run tui` — left pane conversation, right pane live trace. Approval gate shows unified diff modal.

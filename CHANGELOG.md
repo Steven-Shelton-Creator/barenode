@@ -7,6 +7,29 @@ and this project adheres to **chapter tags** (CH00, CH01, CH02, ...).
 
 ---
 
+## [CH14] — 2026-07-15 — Terminal UI
+
+### Added
+- `src/ui/app.py`: `BarenodeApp` — Textual App with two-pane layout, input bar, header/footer
+- `src/ui/app.py`: `AgentRunner` — runs agent in worker thread, captures conversation + trace
+- `src/ui/widgets.py`: `ConversationPane` — left pane, scrollable RichLog with color-coded roles
+- `src/ui/widgets.py`: `TraceStreamPane` — right pane, live span display with token/cost totals
+- `src/ui/widgets.py`: `ApprovalModal` — modal screen with unified diff, Y/Approve or N/Deny
+- `src/ui/widgets.py`: `BarenodeAppLayout` — root horizontal layout
+- `tests/test_ch14.py`: 17 tests — utility functions, AgentRunner, widget construction, modal, regression
+- `dependencies`: `textual>=8.2.8` added to `pyproject.toml`
+
+### Changed
+- `pyproject.toml`: Added `tui` script entry point
+- `docs/phases/14-ui.md`: Status → ✅ Complete, learnings filled
+- `BUILD_PLAN.md`: CH14 marked complete
+- `ROADMAP.md`: CH14 marked complete
+
+### Project Complete
+All 14 chapters built. The full agent = model + harness + UI.
+
+---
+
 ## [CH13] — 2026-07-15 — Observability
 
 ### Added

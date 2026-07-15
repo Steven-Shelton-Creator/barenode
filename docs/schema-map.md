@@ -2,9 +2,9 @@
 
 > Quick-reference directory map for fresh session orientation.  
 > **Last updated:** 2026-07-15  
-> **Tags:** CH01 through CH13  
+> **Tags:** CH01 through CH14  
 > **Branch:** `main`  
-> **HEAD:** `(current)` (CH13 — Observability)  
+> **HEAD:** `(current)` (CH14 — Terminal UI)  
 > **Remote:** `origin` → `github.com/Steven-Shelton-Creator/barenode.git`
 
 ---
@@ -51,20 +51,20 @@ Master index: `docs/workflow-reflections.md`
 │   │   ├── instructions.py  #     ✅ CH03 — system prompt + AGENTS.md loader
 │   │   ├── context.py       #     ✅ CH04 — @file context delivery
 │   │   ├── tools.py         #     ✅ CH05 — Tool registry, 6 tools
-│   │   ├── compaction.py    #     CH06 stub
-│   │   ├── limits.py        #     CH06 stub
-│   │   ├── skills.py        #     CH07 stub
-│   │   ├── sandbox.py       #     CH08 stub
-│   │   ├── memory.py        #     CH09 stub
-│   │   ├── orchestrator.py  #     CH10 stub
-│   │   ├── subagent.py      #     CH11 stub
-│   │   ├── verify.py        #     CH12 stub (has run() placeholder)
+│   │   ├── compaction.py    #     ✅ CH06 — context management
+│   │   ├── limits.py        #     ✅ CH06 — token budget
+│   │   ├── skills.py        #     ✅ CH07 — skill loader
+│   │   ├── sandbox.py       #     ✅ CH08 — Docker isolation
+│   │   ├── memory.py        #     ✅ CH09 — JSONL persistence
+│   │   ├── orchestrator.py  #     ✅ CH10 — planning
+│   │   ├── subagent.py      #     ✅ CH11 — delegation
+│   │   ├── verify.py        #     ✅ CH12 — self-verification gate
 │   │   ├── tracer.py        #     ✅ CH13 — observability spans, sinks
 │   │   └── events.py        #     ✅ CH13 — GenAI event semantics
 │   └── ui/                  #   Terminal UI
 │       ├── __init__.py
-│       ├── app.py           #     CH14 stub (uv run tui)
-│       └── widgets.py       #     CH14 stub
+│       ├── app.py           #     ✅ CH14 — TUI app
+│       └── widgets.py       #     ✅ CH14 — TUI widgets
 │
 ├── tests/                   # Python test suite (pytest)
 │   ├── __init__.py
@@ -72,7 +72,17 @@ Master index: `docs/workflow-reflections.md`
 │   ├── test_ch01.py         #   CH01 stateless model tests (4 tests)
 │   ├── test_ch02.py         #   CH02 history tests (4 tests)
 │   ├── test_ch03.py         #   CH03 instructions tests (9 tests)
-│   └── test_ch04.py         #   CH04 context delivery tests (15 tests)
+│   ├── test_ch04.py         #   CH04 context delivery tests (15 tests)
+│   ├── test_ch05.py         #   CH05 tool tests (38 tests)
+│   ├── test_ch06.py         #   CH06 compaction tests (29 tests)
+│   ├── test_ch07.py         #   CH07 skills tests (26 tests)
+│   ├── test_ch08.py         #   CH08 sandbox tests (15 tests)
+│   ├── test_ch09.py         #   CH09 memory tests (20 tests)
+│   ├── test_ch10.py         #   CH10 planning tests (19 tests)
+│   ├── test_ch11.py         #   CH11 subagent tests (16 tests)
+│   ├── test_ch12.py         #   CH12 verification tests (28 tests)
+│   ├── test_ch13.py         #   CH13 observability tests (30 tests)
+│   └── test_ch14.py         #   CH14 TUI tests (17 tests)
 │
 ├── docs/                    # Documentation
 │   ├── reflections/         #   [TRACKING SYSTEM 3] Daily process reflections
@@ -93,21 +103,23 @@ Master index: `docs/workflow-reflections.md`
 │   │   ├── 10-planner.md    #     ✅ Complete
 │   │   ├── 11-subagents.md  #     ✅ Complete
 │   │   ├── 12-verification.md   # ✅ Complete
-│   │   ├── 13-observability.md  # ❌ Stub
-│   │   └── 14-ui.md         #     ❌ Stub
+│   │   ├── 13-observability.md  # ✅ Complete
+│   │   └── 14-ui.md         #     ✅ Complete
 │   ├── verification/        #   Test run logs per chapter
 │   │   ├── CH01-verification.md  # ✅ Complete
 │   │   ├── CH02-verification.md  # ✅ Complete
 │   │   ├── CH03-verification.md  # ✅ Complete
 │   │   ├── CH04-verification.md  # ✅ Complete
-│   │   ├── CH05-verification.md  # (pending)
-│   │   ├── CH06-verification.md  # (pending)
-│   │   ├── CH07-verification.md  # (pending)
-│   │   ├── CH08-verification.md  # (pending)
-│   │   ├── CH09-verification.md  # (pending)
-│   │   ├── CH10-verification.md  # (pending)
-│   │   ├── CH11-verification.md  # (pending)
-│   │   └── CH12-verification.md  # ✅ Complete
+│   │   ├── CH05-verification.md  # ✅ Complete
+│   │   ├── CH06-verification.md  # ✅ Complete
+│   │   ├── CH07-verification.md  # ✅ Complete
+│   │   ├── CH08-verification.md  # ✅ Complete
+│   │   ├── CH09-verification.md  # ✅ Complete
+│   │   ├── CH10-verification.md  # ✅ Complete
+│   │   ├── CH11-verification.md  # ✅ Complete
+│   │   ├── CH12-verification.md  # ✅ Complete
+│   │   ├── CH13-verification.md  # ✅ Complete
+│   │   └── CH14-verification.md  # ✅ Complete
 │   ├── research/images/     #   24 reference screenshots (ch01-ch14)
 │   │   ├── ch01/            #     2 images
 │   │   ├── ch02/            #     1 image
@@ -181,7 +193,7 @@ Master index: `docs/workflow-reflections.md`
 | CH11 — Subagents | `docs/phases/11-subagents.md` | ✅ Complete |
 | CH12 — Self-Verification | `docs/phases/12-verification.md` | ✅ Complete |
 | CH13 — Observability | `docs/phases/13-observability.md` | ✅ Complete |
-| CH14 — Terminal UI | `docs/phases/14-ui.md` | ❌ Stub |
+| CH14 — Terminal UI | `docs/phases/14-ui.md` | ✅ Complete |
 
 ---
 
@@ -216,6 +228,16 @@ Master index: `docs/workflow-reflections.md`
 | `CH02` | History | Conversation history, in-memory message list |
 | `CH03` | Instructions | System prompt + AGENTS.md auto-load + workspace |
 | `CH04` | Context Delivery | `@file` reference injection via deliver() |
+| `CH05` | Tools | Function registry, calculator, file tools, approval gates |
+| `CH06` | Context Management | Compaction, token budget, clamping |
+| `CH07` | Skills | Progressive disclosure, skill.md frontmatter loader |
+| `CH08` | Sandbox | Docker isolation, workspace fencing, local fallback |
+| `CH09` | Durable State | JSONL session persistence, keyword search |
+| `CH10` | Planning | Orchestrator, JSON plan, step execution, retry |
+| `CH11` | Subagents | Delegate, fan-out, context isolation |
+| `CH12` | Self-Verification | Test gate, exit-code check, verification prompt |
+| `CH13` | Observability | Tracer, spans, pricing, ConsoleSink, JsonlSink |
+| `CH14` | Terminal UI | Two-pane TUI, trace stream, approval modal |
 
 ---
 
@@ -227,7 +249,7 @@ Master index: `docs/workflow-reflections.md`
 | 2 — Action Layer | CH05–08 | ✅ **100% complete** |
 | 3 — Intelligence | CH09–11 | ✅ **100% complete** |
 | 4 — Reliability | CH12–13 | ✅ **100% complete** |
-| 5 — Interface | CH14 | ❌ Not started |
+| 5 — Interface | CH14 | ✅ **100% complete** |
 
 ---
 

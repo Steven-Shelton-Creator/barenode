@@ -58,7 +58,7 @@
 
 ## Tier 5 — Interface
 
-- [ ] **CH14** — Terminal UI: two-pane TUI, live trace stream, approval modals
+- [x] **CH14** — Terminal UI: two-pane TUI, live trace stream, approval modals
 
 *End state: Full agent = model + harness + UI, demonstrable with `uv run tui`.*
 

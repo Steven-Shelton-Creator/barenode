@@ -408,3 +408,70 @@ Barenode's subagents are about **context isolation** — each subtask gets a cle
 ### Decision
 
 **Informational only.** No action needed. This comparison is recorded as a reference for future architectural decisions about multi-agent vs. single-agent design
+
+---
+
+## ADR-009: Subagent Harness Weight — Full Clone vs. Lightweight
+
+**Status:** Open (deferred)
+
+**Date:** 2026-07-14
+
+### Context
+
+CH11's `run_subagent()` creates a full `Agent` instance — the exact same class used by the parent. This means every subagent carries the entire harness:
+
+```python
+agent = Agent(
+    model=model,
+    workspace=workspace,
+    session_name=_next_session_name(),
+)
+return agent.send(message)
+```
+
+### What a Subagent Carries
+
+| Component | Purpose | Needed for a subtask? |
+|-----------|---------|-----------------------|
+| Tool loop (6 iterations) | Executes tool calls | ✅ Yes — subtask may need tools |
+| Tool registry (calc, read, write, bash, delegate, fan_out) | Tool definitions | ✅ Yes |
+| Instructions system (`agents.md`) | System prompt | ✅ Yes |
+| Skills (progressive disclosure) | Skill loading | Maybe — unlikely to need skills |
+| `@file` context delivery | File injection | Maybe — depends on subtask |
+| Context compaction | Token budget management | Maybe — subtask is short-lived |
+| Sandbox (Docker) | Command isolation | ✅ Yes — subagent runs bash |
+| JSONL session persistence | Disk writes | ❌ No — transcript is discarded |
+| Approval gates | Human-in-the-loop | ❌ No — subagent runs unattended |
+| Planning (`/plan`) | Orchestrator | ❌ No — subtask is a single step |
+
+### Options Considered
+
+| Option | Description | Complexity |
+|--------|-------------|------------|
+| **A — Status quo** | Full `Agent` class, every subagent is a complete clone | Zero |
+| **B — Configurable Agent** | `Agent(persist=False, skip_approval=True, ...)` — flags to disable components | Low |
+| **C — Lightweight Subagent class** | Separate `SubAgent` class with only tools + model call, no memory/skills/planning | Medium |
+| **D — Protocol/Interface** | Define an `AgentProtocol` that both `Agent` and `SubAgent` implement | High |
+
+### Decision
+
+**Deferred — keep Option A (status quo) for now.**
+
+### Rationale
+
+- The project is educational and small — harness overhead is negligible
+- A subtask genuinely needs most of the harness (tools, instructions, sandbox)
+- The components we'd strip (persistence, approval, planning) are the simplest parts of the codebase
+- Premature optimization: the full clone works, is tested, and introduces zero bugs
+- This decision can be revisited when/if:
+  - Subagent spawn latency becomes a bottleneck
+  - Session file clutter reaches a pain point
+  - A use case emerges for truly lightweight subagents (e.g., hundreds per second)
+
+### Consequences
+
+- Subagents are recursively full agents — they can call `delegate` and `fan_out` themselves
+- Subagent weight is proportional to parent weight — no savings
+- If Option B/C/D is implemented later, the change is confined to `subagent.py` and `agent.py`
+- The recursiveness is actually a feature for complex task decomposition (a fan-out subtask could itself fan out)

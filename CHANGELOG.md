@@ -7,6 +7,21 @@ and this project adheres to **chapter tags** (CH00, CH01, CH02, ...).
 
 ---
 
+## [CH12] — 2026-07-14 — Self-Verification
+
+### Added
+- `src/harness/verify.py`: Verification gate — `parse_test_command()`, `was_code_file_written()`, `check_test_result()`, `build_verification_prompt()`, `CODE_EXTENSIONS`
+- `tests/test_ch12.py`: 28 tests — code extensions, test command parsing, tool call path detection, result checking, agent integration, regression
+
+### Changed
+- `src/harness/agent.py`: Wired verification gate into tool loop — arms on code file write, injects prompt, checks bash result for exit 0
+- `AGENTS.md`: Expanded `## Testing` section with verification instructions
+- `docs/phases/12-verification.md`: Status → ✅ Complete, learnings filled
+- `BUILD_PLAN.md`: CH12 marked complete
+- `ROADMAP.md`: CH12 marked complete
+
+---
+
 ## [CH11] — 2026-07-14 — Subagents
 
 ### Added

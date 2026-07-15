@@ -21,6 +21,12 @@ from harness.approval import prompt_approval
 from harness.compaction import compact
 from harness.limits import MAX_CONTEXT_TOKENS
 from harness.memory import save_session, load_session
+from harness.verify import (
+    was_code_file_written,
+    parse_test_command,
+    check_test_result,
+    build_verification_prompt,
+)
 
 # Maximum number of tool call iterations before the agent stops
 _MAX_TOOL_ITERATIONS = 6
@@ -62,6 +68,11 @@ class Agent:
         self.session_dir = session_dir or os.environ.get("BARENODE_SESSION_DIR")
         self.messages: list[dict] = load_session(self.session_name, self.session_dir)
 
+        # Verification gate (CH12)
+        self._pending_verification = False
+        self._verification_waiting = False
+        self._test_command = None
+
     def send(self, message: str) -> str:
         """Append a user message and return the model's final text reply.
 
@@ -93,6 +104,14 @@ class Agent:
 
         # Tool loop — capped iterations
         for iteration in range(_MAX_TOOL_ITERATIONS):
+            # CH12: If verification is pending, inject a verification prompt
+            if self._pending_verification and not self._verification_waiting:
+                prompt = build_verification_prompt(self._test_command)
+                self.messages.append({"role": "user", "content": prompt})
+                self._verification_waiting = True  # Waiting for test result
+                # Don't continue — fall through to model call so the agent
+                # sees the verification prompt and runs the test
+
             # Build system message fresh each turn
             sys_msg = build_system_message(self.workspace)
             messages_to_send = (
@@ -159,6 +178,26 @@ class Agent:
                         "tool_call_id": tc["id"],
                         "content": result,
                     })
+
+                    # CH12: Check if this bash call was a test run
+                    if self._verification_waiting and tool_name == "bash":
+                        if check_test_result(result):
+                            # Tests passed — verification satisfied
+                            self._verification_waiting = False
+                            self._pending_verification = False
+                            self._test_command = None
+                        else:
+                            # Tests failed — re-arm for next iteration
+                            # The agent will see the failure and fix it
+                            self._pending_verification = True
+                            self._verification_waiting = False
+
+                # CH12: Check if code files were written in this iteration
+                if was_code_file_written(response.tool_calls):
+                    test_cmd = parse_test_command(self.workspace)
+                    if test_cmd:
+                        self._pending_verification = True
+                        self._test_command = test_cmd
 
                 # Continue loop — the model will see the tool results
                 continue

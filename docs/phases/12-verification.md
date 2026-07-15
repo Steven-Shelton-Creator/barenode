@@ -1,6 +1,7 @@
 # Phase 12 — Self-Verification
 
-**Status:** 📝 Not Started
+**Status:** ✅ Complete
+**Date:** 2026-07-14
 
 ---
 
@@ -45,15 +46,30 @@ I can't answer that — I don't have internet access.
 
 ## Acceptance Criteria
 
-- [ ] Verification fires only when a code file was written
-- [ ] Test command comes from AGENTS.md `[testing]` section
-- [ ] Agent runs the test, harness checks for exit 0
-- [ ] Harness rejects "done" without a passing test
-- [ ] Non-code tasks skip verification
+- [x] Verification fires only when a code file was written
+- [x] Test command comes from AGENTS.md `[testing]` section
+- [x] Agent runs the test, harness checks for exit 0
+- [x] Harness rejects "done" without a passing test
+- [x] Non-code tasks skip verification
 
 ## Learnings
 
-*(To be filled during implementation.)*
+### Verification Flow
+
+The verification gate has three states:
+1. **Idle** — no code changes detected, no prompt needed
+2. **Armed** (`_pending_verification = True`) — code file was written, inject the "run tests" prompt on next model call
+3. **Waiting** (`_verification_waiting = True`) — prompt was injected, waiting for the bash tool to return a test result
+
+The gate transitions: Code written → Arm → Prompt injected → Wait for bash → Check exit code → Pass (reset) or Fail (re-arm)
+
+### Detection Method
+
+We check tool calls for `write_file` with a path extension in `CODE_EXTENSIONS`. This is simple and avoids false positives from read-only operations or non-code files.
+
+### Test Result Parsing
+
+The bash tool appends `[exit code: N]` when the exit code is non-zero. If the string lacks this marker, exit was 0 (success). If it contains `[exit code: 1]`, the test failed.
 
 ## Reference Images
 

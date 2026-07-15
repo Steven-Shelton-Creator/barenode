@@ -138,8 +138,12 @@ READ → PLAN → DECIDE → BUILD → TEST → VERIFY → LOG → NEXT
 
 ## Testing
 
+Before declaring any code change complete, you **must** run the full test suite and verify all tests pass.
+
 Run the automated test suite:
 
 ```bash
 uv run pytest tests/ -v
 ```
+
+If any test fails, fix the issue and re-run until all tests pass. The harness will not accept "done" without a passing test run.

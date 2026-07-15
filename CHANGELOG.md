@@ -7,6 +7,22 @@ and this project adheres to **chapter tags** (CH00, CH01, CH02, ...).
 
 ---
 
+## [CH13] — 2026-07-15 — Observability
+
+### Added
+- `src/model/pricing.py`: `ModelPricing`, `PRICING_TABLE` (20+ entries), `lookup_pricing()`, `estimate_cost()`, `is_local_model()`
+- `src/harness/events.py`: `GenAISpanKind` enum, `SpanEvent` dataclass, event builders (`llm_call_event`, `tool_call_event`, `completion_event`)
+- `src/harness/tracer.py`: `Span` dataclass, `Tracer` class with `span()` context manager, `ConsoleSink`, `JsonlSink`, `MultiSink`
+- `tests/test_ch13.py`: 30 tests — pricing, events, tracer, sinks, agent integration, regression
+
+### Changed
+- `src/harness/agent.py`: Wired tracer into `send()` — model calls and tool calls wrapped in spans, token/cost tracking, trace flushed to sink after each turn
+- `docs/phases/13-observability.md`: Status → ✅ Complete, learnings filled
+- `BUILD_PLAN.md`: CH13 marked complete
+- `ROADMAP.md`: CH13 marked complete
+
+---
+
 ## [CH12] — 2026-07-14 — Self-Verification
 
 ### Added

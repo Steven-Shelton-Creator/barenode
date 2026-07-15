@@ -27,6 +27,10 @@ from harness.verify import (
     check_test_result,
     build_verification_prompt,
 )
+from harness.tracer import Tracer, ConsoleSink, GenAISpanKind
+from harness.events import llm_call_event, tool_call_event, completion_event
+from harness.limits import estimate_tokens
+from model.pricing import estimate_cost
 
 # Maximum number of tool call iterations before the agent stops
 _MAX_TOOL_ITERATIONS = 6
@@ -73,6 +77,10 @@ class Agent:
         self._verification_waiting = False
         self._test_command = None
 
+        # Observability (CH13)
+        self.tracer = Tracer()
+        self.sink = ConsoleSink()
+
     def send(self, message: str) -> str:
         """Append a user message and return the model's final text reply.
 
@@ -118,8 +126,36 @@ class Agent:
                 [sys_msg] + self.messages if sys_msg else self.messages
             )
 
-            # Call the model
-            response = chat(self.model, messages_to_send, tools=tool_specs)
+            # CH13: Trace the model call
+            input_tokens = estimate_tokens(str(messages_to_send))
+            with self.tracer.span(
+                "model_call",
+                kind=GenAISpanKind.LLM,
+                attributes={"model": self.model},
+            ) as llm_span:
+                response = chat(self.model, messages_to_send, tools=tool_specs)
+
+            # Estimate output tokens and cost
+            output_text = response.content or ""
+            output_tokens = estimate_tokens(output_text)
+            cost = estimate_cost(self.model, input_tokens, output_tokens)
+            self.tracer.add_event(
+                llm_span,
+                llm_call_event(
+                    model=self.model,
+                    input_tokens=input_tokens,
+                    output_tokens=output_tokens,
+                    cost=cost,
+                ),
+            )
+            self.tracer.end_span(
+                llm_span,
+                attributes={
+                    "total_tokens": input_tokens + output_tokens,
+                    "cost": cost,
+                    "model": self.model,
+                },
+            )
 
             # Handle tool calls
             if response.tool_calls:
@@ -169,8 +205,15 @@ class Agent:
                             })
                             continue
 
-                    # Execute the tool
-                    result = self.tools.execute(tool_name, args)
+                    # CH13: Trace the tool call
+                    args_str = json.dumps({k: v for k, v in args.items() if k != "workspace"})
+                    with self.tracer.span(
+                        f"tool:{tool_name}",
+                        kind=GenAISpanKind.TOOL,
+                        attributes={"tool": tool_name, "arguments": args_str},
+                    ) as tool_span:
+                        # Execute the tool
+                        result = self.tools.execute(tool_name, args)
 
                     # Store the tool result
                     self.messages.append({
@@ -178,6 +221,12 @@ class Agent:
                         "tool_call_id": tc["id"],
                         "content": result,
                     })
+
+                    # Update the tool span with result
+                    self.tracer.end_span(
+                        tool_span,
+                        attributes={"result": result[:200]},
+                    )
 
                     # CH12: Check if this bash call was a test run
                     if self._verification_waiting and tool_name == "bash":
@@ -205,19 +254,28 @@ class Agent:
             # No tool calls — text response
             if response.content:
                 self.messages.append({"role": "assistant", "content": response.content})
+                self._flush_trace()
                 self._save()
                 return response.content
 
             # Edge case: empty response
             self.messages.append({"role": "assistant", "content": ""})
+            self._flush_trace()
             self._save()
             return ""
 
         # Exceeded max iterations
         msg = f"[Agent] Tool loop exceeded {_MAX_TOOL_ITERATIONS} iterations. Stopping."
         self.messages.append({"role": "assistant", "content": msg})
+        self._flush_trace()
         self._save()
         return msg
+
+    def _flush_trace(self) -> None:
+        """Flush the current trace to the sink (CH13)."""
+        trace = self.tracer.get_trace()
+        self.sink.write(trace)
+        self.tracer.clear()
 
     def _save(self) -> None:
         """Persist current messages to disk (CH09)."""

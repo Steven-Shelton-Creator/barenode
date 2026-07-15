@@ -81,9 +81,10 @@ Each milestone maps to one chapter / git tag. Every chapter builds one primitive
 | 12   | `CH12` | ✅ Self-verification — test gate          | `src/harness/verify.py`,          |
 |      |        |                                        | `src/harness/agent.py`,           |
 |      |        |                                        | `AGENTS.md`                        |
-| 13   | `CH13` | Observability — tracer, spans, pricing | `src/harness/tracer.py`,         |
+| 13   | `CH13` | ✅ Observability — tracer, spans, pricing | `src/harness/tracer.py`,         |
 |      |        |                                        | `src/harness/events.py`,         |
-|      |        |                                        | `src/model/pricing.py`           |
+|      |        |                                        | `src/model/pricing.py`,          |
+|      |        |                                        | `src/harness/agent.py`            |
 
 **Demo:** Edit code file — harness won't accept "done" until `uv run verify` passes. Multi-step trace shows every call with token/cost breakdown.
 

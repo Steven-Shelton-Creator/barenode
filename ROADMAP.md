@@ -50,7 +50,7 @@
 ## Tier 4 — Reliability
 
 - [x] **CH12** — Self-Verification: test gate, agents.md [testing] section
-- [ ] **CH13** — Observability: OpenTelemetry traces, cost tracking, multi-sink
+- [x] **CH13** — Observability: OpenTelemetry traces, cost tracking, multi-sink
 
 *End state: Agent verifies its own work; every call is traceable.*
 

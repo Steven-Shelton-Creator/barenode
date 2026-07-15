@@ -1,10 +1,10 @@
 # barenode Schema Map
 
 > Quick-reference directory map for fresh session orientation.  
-> **Last updated:** 2026-07-14  
-> **Tags:** CH01, CH02, CH03, CH04  
-> **Branch:** `master`  
-> **HEAD:** `9670fa7` (post-CH04)  
+> **Last updated:** 2026-07-15  
+> **Tags:** CH01 through CH13  
+> **Branch:** `main`  
+> **HEAD:** `(current)` (CH13 — Observability)  
 > **Remote:** `origin` → `github.com/Steven-Shelton-Creator/barenode.git`
 
 ---
@@ -44,7 +44,7 @@ Master index: `docs/workflow-reflections.md`
 │   ├── model/               #   Provider abstraction (provider seam)
 │   │   ├── __init__.py
 │   │   ├── provider.py      #     chat(messages: list[dict]) — 4 backends
-│   │   └── pricing.py       #     Cost tables (CH13 stub)
+│   │   └── pricing.py       #     ✅ CH13 — cost tables per model
 │   ├── harness/             #   Agent loop & primitives
 │   │   ├── __init__.py
 │   │   ├── agent.py         #     Agent class — CH02 history, CH03 instructions, CH04 @file
@@ -59,8 +59,8 @@ Master index: `docs/workflow-reflections.md`
 │   │   ├── orchestrator.py  #     CH10 stub
 │   │   ├── subagent.py      #     CH11 stub
 │   │   ├── verify.py        #     CH12 stub (has run() placeholder)
-│   │   ├── tracer.py        #     CH13 stub
-│   │   └── events.py        #     CH13 stub
+│   │   ├── tracer.py        #     ✅ CH13 — observability spans, sinks
+│   │   └── events.py        #     ✅ CH13 — GenAI event semantics
 │   └── ui/                  #   Terminal UI
 │       ├── __init__.py
 │       ├── app.py           #     CH14 stub (uv run tui)
@@ -180,7 +180,7 @@ Master index: `docs/workflow-reflections.md`
 | CH10 — Planning | `docs/phases/10-planner.md` | ✅ Complete |
 | CH11 — Subagents | `docs/phases/11-subagents.md` | ✅ Complete |
 | CH12 — Self-Verification | `docs/phases/12-verification.md` | ✅ Complete |
-| CH13 — Observability | `docs/phases/13-observability.md` | ❌ Stub |
+| CH13 — Observability | `docs/phases/13-observability.md` | ✅ Complete |
 | CH14 — Terminal UI | `docs/phases/14-ui.md` | ❌ Stub |
 
 ---
@@ -226,7 +226,7 @@ Master index: `docs/workflow-reflections.md`
 | 1 — Core Agent | CH01–04 | ✅ **100% complete** |
 | 2 — Action Layer | CH05–08 | ✅ **100% complete** |
 | 3 — Intelligence | CH09–11 | ✅ **100% complete** |
-| 4 — Reliability | CH12–13 | 🟡 **50% complete** (CH12 done, CH13 pending) |
+| 4 — Reliability | CH12–13 | ✅ **100% complete** |
 | 5 — Interface | CH14 | ❌ Not started |
 
 ---

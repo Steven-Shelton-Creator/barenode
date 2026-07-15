@@ -1,6 +1,7 @@
 # Phase 13 — Observability
 
-**Status:** 📝 Not Started
+**Status:** ✅ Complete
+**Date:** 2026-07-15
 
 ---
 
@@ -49,15 +50,29 @@ Total tokens    : 227
 
 ## Acceptance Criteria
 
-- [ ] Every model call is traced with token count and cost
-- [ ] Every tool call is traced with input args and output result
-- [ ] Pricing table accurately reflects local (free) vs hosted (metered)
-- [ ] Console sink prints trace after each turn
-- [ ] OpenTelemetry events use GenAI semantic conventions
+- [x] Every model call is traced with token count and cost
+- [x] Every tool call is traced with input args and output result
+- [x] Pricing table accurately reflects local (free) vs hosted (metered)
+- [x] Console sink prints trace after each turn
+- [x] OpenTelemetry events use GenAI semantic conventions
 
 ## Learnings
 
-*(To be filled during implementation.)*
+### Tracer Design
+
+The tracer uses a two-phase lifecycle: spans are active while in progress, then moved to a completed list when ended. The `span()` context manager makes instrumentation easy — just wrap the operation and it automatically records timing.
+
+### Multi-Sink Architecture
+
+The `MultiSink` fans out to any number of sinks. Currently we use `ConsoleSink` for immediate feedback, and `JsonlSink` for persistent trace files. Future sinks (UI panel, OpenTelemetry collector) can be added without changing the instrumentation code.
+
+### Token Estimation
+
+We use the heuristic `estimate_tokens()` from CH06 (len(text) // 4) for token counting. This is approximate but good enough for cost estimation without making an extra API call.
+
+### Pricing Table
+
+The pricing table uses regex patterns matched against the full model spec. Local providers (ollama, lstudio, fake) are always free. OpenRouter models have per-token costs from published pricing. The table is ordered from most-specific to least-specific.
 
 ## Reference Images
 

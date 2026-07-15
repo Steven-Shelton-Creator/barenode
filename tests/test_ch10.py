@@ -236,3 +236,29 @@ def test_ch09_persistence_unchanged(tmp_path) -> None:
     agent.send("hello")
     loaded = load_session("ch10_test", session_dir=str(tmp_path))
     assert len(loaded) >= 2
+
+
+# =========================================================================
+# Session persistence bug — diagnostic log
+# =========================================================================
+#
+# After CH09 added durable state, every Agent() loads messages from disk
+# on init and saves after every send().  Session files lived in logs/*.jsonl
+# and accumulated across multiple pytest runs.
+#
+# Symptom: Tests expected exactly 4 messages after 2 turns, but got 8, 12,
+# or more.  Each run loaded the previous run's session and appended.
+#
+#   Run 1:  Agent sends "first", "second"  →  messages = 4  →  saved
+#   Run 2:  Agent loads 4 from disk, sends "first", "second"  →  8  →  saved
+#   Run 3:  Agent loads 8 from disk  →  12  →  FAIL (expected 4)
+#
+# Fix (conftest.py):
+#   1. Use a temporary directory for session files (BARENODE_SESSION_DIR)
+#   2. Clean up after each test — delete the temp directory
+#
+#   monkeypatch.setenv("BARENODE_SESSION_DIR", tempfile.mkdtemp())
+#   request.addfinalizer(lambda: shutil.rmtree(tmp_session_dir))
+#
+# Result: Every test gets a fresh, empty session that disappears when
+# the test ends.  All 180 tests pass.

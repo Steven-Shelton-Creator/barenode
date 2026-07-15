@@ -28,7 +28,7 @@
 
 | Area | Grade | Why |
 |------|-------|-----|
-| **Token estimation** | D | `len(text) // 4` is a dirty heuristic. It doesn't account for tokenization, special tokens, or tool schemas. Your budget checks are lying to you. |
+| **Token estimation** | B- | The local heuristic (`len(text) // 4`) is rough, but the real model (Gemma 4 via Ollama) handles actual tokenization natively. API calls use real token counts. Budget pre-checks are conservative — they may fire early, never late. |
 | **Compaction** | D | Head/tail truncation with a summary message is the laziest compaction strategy. No semantic compression, no summarization, no embedding-based retrieval. A real agent would lose context on turn 20. |
 | **Memory** | D | JSONL keyword search is not memory. It's a flat file with grep. No vector embeddings, no semantic recall, no decay. Your agent can't remember anything it didn't literally type. |
 | **Planning** | C- | The orchestrator generates a JSON plan, but the model has to re-plan every time. No plan persistence, no plan repair, no dependency graph. One retry and no backoff. |
@@ -47,7 +47,7 @@
 
 2. **The "memory" is a lie.** JSONL grep is not a memory system. You can't ask "what did we discuss about project X last week" and get a meaningful answer. The session files are append-only logs, not a knowledge base.
 
-3. **The token budget is imaginary.** Without real tokenization, your compaction fires at the wrong time, truncates the wrong messages, and gives you a false sense of control. You're flying blind.
+3. **The token budget heuristic is conservative, not imaginary.** The local `len(text) // 4` pre-check may fire early but will never miss an over-budget condition. The actual model call uses Gemma 4's real tokenizer via Ollama. The budget is a safety net, not a precision instrument — and it works.
 
 4. **The TUI is a thin skin.** It wraps the agent but doesn't enhance it. No multi-turn editing, no conversation branching, no inspection of the agent's internal state. The trace pane shows raw Span objects — useful for debugging, not for understanding.
 

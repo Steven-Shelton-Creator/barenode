@@ -349,3 +349,62 @@ Since `run_subagent()` assigns each subagent a unique `session_name` (e.g., `sub
 - Every `delegate` or `fan_out` call leaves a trace in `logs/` — good for debugging, bad for minimalists
 - Subagent session files are tiny and self-cleaning if `logs/` is added to a cleanup cron or gitignored for large-scale use
 - No code changes needed now; if Option B/C/D is chosen later, it's a 2-line change in `run_subagent()` and `_run_one()`
+
+---
+
+## ADR-008: Session Forking vs. Subagent Delegation — Pi Architecture Comparison
+
+**Status:** Open (informational)
+
+**Date:** 2026-07-14
+
+### Context
+
+During CH11 implementation, we observed that the Pi coding agent (the harness this conversation runs inside) has a different model for branching/parallelism than barenode's subagent system. The question arose: does Pi spin up sub-agents when you fork a session?
+
+### Pi's Session Architecture
+
+Pi uses a **tree-structured session model** with a single agent instance:
+
+| Mechanism | What it does | Agent instance |
+|-----------|-------------|----------------|
+| **`/fork`** | Creates a new session file from a previous user message | Same agent, same process |
+| **`/tree`** | Navigates branches within the same session file | Same agent, same process |
+| **`/clone`** | Duplicates current branch into a new session file | Same agent, same process |
+| **`/new`** | Starts a fresh, empty session | Same agent, same process |
+
+None of these create a new `Agent` object, a new LLM call loop, or a parallel sub-process. The agent is singular — forks are about **session navigation** (exploring alternative conversation paths) not **context isolation** (giving each subtask its own clean window).
+
+### Barenode's Subagent Architecture
+
+| Mechanism | What it does | Agent instance |
+|-----------|-------------|----------------|
+| **`delegate(task)`** | Single subtask in a fresh agent | ✅ New `Agent` instance |
+| **`fan_out(tasks)`** | N parallel subtasks, each in its own agent | ✅ N new `Agent` instances |
+| **`/plan` → execute** | Sequential steps through the same agent | Same agent |
+
+Barenode's subagents are about **context isolation** — each subtask gets a clean message list, its own session file, and runs independently.
+
+### Key Differences
+
+| Dimension | Pi Fork | Barenode Delegate |
+|-----------|---------|--------------------|
+| **Purpose** | Navigate alternative paths | Execute isolated subtasks |
+| **Context** | Shared — replays branch history | Isolated — fresh empty context |
+| **Parallelism** | No — linear continuation | Yes — `fan_out` uses ThreadPoolExecutor |
+| **Persistence** | Full session file per fork | Full session file per subagent |
+| **Agent count** | 1 | N (one per subtask) |
+
+### Implications for Barenode Design
+
+- Pi's model is simpler and appropriate for a coding assistant that follows one conversation at a time
+- Barenode's model is more complex but enables true parallel subtask execution with context isolation
+- For a small educational system, Pi's single-agent approach is sufficient — barenode's subagent system adds architectural overhead that only pays off at scale
+- If barenode grows into a production system, the subagent architecture could be optimized by:
+  - Reusing a thread pool instead of spawning new agents per call
+  - Adding a subagent backlog/cache to avoid redundant session file writes
+  - Implementing a lightweight subagent that skips persistence entirely
+
+### Decision
+
+**Informational only.** No action needed. This comparison is recorded as a reference for future architectural decisions about multi-agent vs. single-agent design
